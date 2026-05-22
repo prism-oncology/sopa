@@ -15,7 +15,7 @@ classifiers = [
   "Topic :: Scientific/Engineering",
 ]
 dependencies = [
-  "spatialdata>=0.7.2",
+  "spatialdata>=0.7.3",
   "spatialdata-io>=0.3.0",
   "spatialdata-plot>=0.2.10",
   "scanpy>=1.10.4",
@@ -23,7 +23,6 @@ dependencies = [
   "igraph>=0.11.0",
   "typer>=0.9.0",
   "dask[distributed]>=2024.4.1",
-  "ome-zarr<0.14.0",
 ]
 
 [project.optional-dependencies]
