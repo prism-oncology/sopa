@@ -4781,7 +4781,7 @@ wheels = [
 
 [[package]]
 name = "sopa"
-version = "2.2.2"
+version = "2.2.6"
 source = { editable = "." }
 dependencies = [
     { name = "anndata" },
@@ -4836,7 +4836,7 @@ requires-dist = [
     { name = "dask", extras = ["distributed"], specifier = ">=2024.4.1" },
     { name = "igraph", specifier = ">=0.11.0" },
     { name = "loompy", marker = "extra == 'baysor'", specifier = ">=3.0.7" },
-    { name = "ome-zarr", specifier = "!=0.14.0" },
+    { name = "ome-zarr", specifier = "<0.14.0" },
     { name = "scanpy", specifier = ">=1.10.4" },
     { name = "spatialdata", specifier = ">=0.7.2" },
     { name = "spatialdata-io", specifier = ">=0.3.0" },

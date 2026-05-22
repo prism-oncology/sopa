@@ -1,14 +1,18 @@
-# Run proseg segmentation on Visium HD data using the 10X Genomics as prior segmentation
-# WARNING: this prior segmentation only exists in recent Visium HD versions.
+# Run proseg segmentation on Visium HD data using Stardist as prior segmentation.
 
 # For parameters details, see this commented example: https://github.com/prism-oncology/sopa/blob/main/workflow/config/example_commented.yaml
 read:
   technology: visium_hd
 
 patchify:
+  patch_width_pixel: 2000
+  patch_overlap_pixel: 50
   patch_width_microns: -1
 
 segmentation:
+  stardist:
+    min_area: 30
+
   proseg:
     prior_shapes_key: auto
 

@@ -3,7 +3,7 @@
 Sopa comes with an existing [Snakemake](https://snakemake.readthedocs.io/en/stable/) workflow to get started quickly. This will not involve any coding but requires some setup specific to `snakemake`.
 
 !!! info
-    If you're more familiar with Nextflow, you can try [nf-core/sopa](https://nf-co.re/sopa/dev/) instead.
+    If you're more familiar with Nextflow, you can try [nf-core/sopa](https://nf-co.re/sopa/) instead.
 
 ## Setup
 
@@ -119,6 +119,19 @@ You can either execute the pipeline locally or on a high-performance-cluster (ch
 
 
 For more customization, see the [snakemake CLI documentation](https://snakemake.readthedocs.io/en/stable/executing/cli.html).
+
+### Visium HD usage
+
+For Visium HD, the full-resolution microscopy image (not the cytassist image) is required by Sopa as we’ll run cell segmentation on the H&E full-resolution slide. Therefore, you'll need to also pass `fullres_image_file=/path/to_fullres_image` to the config in the command line:
+
+```sh
+snakemake \
+    --config data_path=/path/to/directory fullres_image_file=/path/to_fullres_image \
+    --configfile=config/visium_hd/stardist.yaml \
+    --workflow-profile profile/slurm  # or any profile you want
+```
+
+Note that, here, `data_path` should be the output directory of Space Ranger. If you want to run Space Ranger within the pipeline (and not separately), refer to the [`nf-core` version of Sopa](https://nf-co.re/sopa).
 
 ## Toy example
 
