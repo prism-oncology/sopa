@@ -58,7 +58,9 @@ class StainingSegmentation:
         self.gaussian_sigma = gaussian_sigma
         self.min_patch_size = min_patch_size
 
-        self.image_key, self.image = get_spatial_image(sdata, key=image_key, return_key=True)
+        self.image_key, self.image = get_spatial_image(
+            sdata, key=image_key, return_key=True, scale=_patches_scale(sdata)
+        )
 
         image_channels = self.image.coords["c"].values
 
@@ -83,15 +85,13 @@ class StainingSegmentation:
         bounds = [int(x) for x in patch.bounds]
 
         patch_width, patch_height = bounds[2] - bounds[0], bounds[3] - bounds[1]
+        x_slice, y_slice = slice(bounds[0], bounds[2]), slice(bounds[1], bounds[3])
+
         if min(patch_width, patch_height) < self.min_patch_size:
             log.info(f"Skipping patch with too small dimensions ({patch_width}, {patch_height})")
             return gpd.GeoDataFrame(geometry=[])
 
-        image = self.image.sel(
-            c=self.channels,
-            x=slice(bounds[0], bounds[2]),
-            y=slice(bounds[1], bounds[3]),
-        ).values
+        image = self.image.sel(c=self.channels).isel(x=x_slice, y=y_slice).values
 
         assert np.issubdtype(image.dtype, np.integer), (
             f"Invalid image type {image.dtype}. Transform it to an integer dtype, e.g. `np.uint8`."
@@ -186,7 +186,7 @@ class StainingSegmentation:
             image_key: Key of the image on which segmentation has been run
             shapes_key: Name to provide to the geodataframe to be created
         """
-        image = get_spatial_image(sdata, image_key)
+        image = get_spatial_image(sdata, image_key, scale=_patches_scale(sdata))
 
         cells.index = image_key + cells.index.astype(str)
         cells = ShapesModel.parse(cells, transformations=copy_transformations(image))
@@ -194,6 +194,11 @@ class StainingSegmentation:
         add_spatial_element(sdata, key_added, cells)
 
         log.info(f"Added {len(cells)} cell boundaries in sdata['{key_added}']")
+
+
+def _patches_scale(sdata: SpatialData) -> str:
+    patches_gdf = sdata[SopaKeys.PATCHES]
+    return patches_gdf[SopaKeys.SCALE].iloc[0] if SopaKeys.SCALE in patches_gdf else "scale0"
 
 
 def _channels_average_within_mask(image: np.ndarray, mask: np.ndarray) -> np.ndarray:

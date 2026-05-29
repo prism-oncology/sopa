@@ -13,6 +13,7 @@ class SopaKeys:
     EMBEDDINGS_PATCHES = "embeddings_patches"
     BOUNDS = "bboxes"
     PATCHES_ILOCS = "ilocs"
+    SCALE = "scale"
     ROI = "region_of_interest"
     PRIOR_SHAPES_KEY = "prior_shapes_key"
     SOPA_PRIOR = "sopa_prior"
