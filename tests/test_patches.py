@@ -19,7 +19,7 @@ from sopa.segmentation.methods.utils import _check_transcript_patches
 
 @pytest.fixture
 def sdata() -> SpatialData:
-    sdata = sopa.io.toy_dataset(length=512, cell_density=1e-3)
+    sdata = sopa.io.toy_dataset(length=512, cell_density=1e-3, as_multiscale=True)
     return sdata
 
 
@@ -28,6 +28,24 @@ def test_patchify_image(sdata: SpatialData):
     assert len(sdata[SopaKeys.PATCHES]) == 9
 
     sopa.make_image_patches(sdata, 512, 0)
+    assert len(sdata[SopaKeys.PATCHES]) == 1
+
+    sopa.make_image_patches(sdata, 200, 0, scale="scale0")
+    assert len(sdata[SopaKeys.PATCHES]) == 9
+
+    sopa.make_image_patches(sdata, 200, 0, scale="scale1")
+    assert len(sdata[SopaKeys.PATCHES]) == 4
+
+    sopa.make_image_patches(sdata, 200, 0, scale="scale2")
+    assert len(sdata[SopaKeys.PATCHES]) == 1
+
+    sopa.make_image_patches(sdata, 500, 0, scale="scale0")
+    assert len(sdata[SopaKeys.PATCHES]) == 4
+
+    sopa.make_image_patches(sdata, 500, 0, scale="scale1")
+    assert len(sdata[SopaKeys.PATCHES]) == 1
+
+    sopa.make_image_patches(sdata, 500, 0, scale="scale2")
     assert len(sdata[SopaKeys.PATCHES]) == 1
 
 
