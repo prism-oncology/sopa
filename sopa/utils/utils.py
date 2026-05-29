@@ -230,6 +230,7 @@ def get_spatial_element(
     key: str | None = None,
     return_key: bool = False,
     as_spatial_image: bool = False,
+    scale: str | None = None,
 ) -> SpatialElement | tuple[str, SpatialElement]:
     """Gets an element from a SpatialData object.
 
@@ -238,6 +239,8 @@ def get_spatial_element(
         key: Optional element key. If `None`, returns the only element (if only one).
         return_key: Whether to also return the key of the element.
         as_spatial_image: Whether to return the element as a `SpatialImage` (if it is a `DataTree`)
+        scale: If the element is a `DataTree`, the scale to be used.
+
 
     Returns:
         If `return_key` is False, only the element is returned, else a tuple `(element_key, element)`
@@ -246,7 +249,7 @@ def get_spatial_element(
 
     if key is not None:
         assert key in element_dict, f"Spatial element '{key}' not found."
-        return _return_element(element_dict, key, return_key, as_spatial_image)
+        return _return_element(element_dict, key, return_key, as_spatial_image, scale=scale)
 
     assert len(element_dict) > 0, (
         "No spatial element found. Provide an element key to denote which element you want to use."
@@ -257,13 +260,14 @@ def get_spatial_element(
 
     key = next(iter(element_dict.keys()))
 
-    return _return_element(element_dict, key, return_key, as_spatial_image)
+    return _return_element(element_dict, key, return_key, as_spatial_image, scale=scale)
 
 
 def get_spatial_image(
     sdata: SpatialData,
     key: str | None = None,
     return_key: bool = False,
+    scale: str | None = None,
     valid_attr: str = SopaAttrs.CELL_SEGMENTATION,
 ) -> DataArray | tuple[str, DataArray]:
     """Gets a DataArray from a SpatialData object (if the image has multiple scale, the `scale0` is returned)
@@ -282,16 +286,23 @@ def get_spatial_image(
         key=key or sdata.attrs.get(valid_attr),
         return_key=return_key,
         as_spatial_image=True,
+        scale=scale,
     )
 
 
 def _return_element(
-    element_dict: dict[str, SpatialElement], key: str, return_key: bool, as_spatial_image: bool
+    element_dict: dict[str, SpatialElement],
+    key: str,
+    return_key: bool,
+    as_spatial_image: bool,
+    scale: str | None = None,
 ) -> SpatialElement | tuple[str, SpatialElement]:
     element = element_dict[key]
 
     if as_spatial_image and isinstance(element, DataTree):
-        element = next(iter(element["scale0"].values()))
+        if scale is not None and scale != "scale0":
+            assert scale in element, f"Scale '{scale}' not found. Available scales: {', '.join(element.keys())}"
+        element = next(iter(element[scale or "scale0"].values()))
 
     return (key, element) if return_key else element
 

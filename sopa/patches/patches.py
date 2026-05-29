@@ -81,6 +81,7 @@ class Patches2D:
         patch_overlap: float | int = 50,
         roi_key: str | None = SopaKeys.ROI,
         use_roi_centroids: bool = False,
+        scale: str | None = None,
     ):
         """
         Args:
@@ -97,10 +98,15 @@ class Patches2D:
 
         self.sdata = sdata
         self.element = sdata[element] if isinstance(element, str) else element
-        self.original_element = self.element  # in case the element is a DataTree
 
+        self.scale = scale
         if isinstance(self.element, DataTree):
-            self.element = next(iter(self.element["scale0"].values()))
+            assert scale is None or scale in self.element, (
+                f"Scale '{scale}' not found. Available scales: {', '.join(self.element.keys())}"
+            )
+            self.element = next(iter(self.element[scale or "scale0"].values()))
+        elif scale is not None:
+            raise ValueError("Scales are only supported for DataTree elements.")
 
         if isinstance(self.element, DataArray):
             xmin, ymin = 0, 0
@@ -120,7 +126,7 @@ class Patches2D:
         assert roi_key is None or roi_key in sdata.shapes or roi_key == SopaKeys.ROI, f"Invalid {roi_key=}"
 
         if roi_key is not None and roi_key in sdata.shapes:
-            roi_geo_df = to_intrinsic(sdata, sdata[roi_key], self.original_element)
+            roi_geo_df = to_intrinsic(sdata, sdata[roi_key], self.element)
             self.roi = _get_roi(roi_geo_df, use_roi_centroids)
 
         self.geo_df = self._init_patches(use_roi_centroids)
@@ -156,6 +162,9 @@ class Patches2D:
         geo_df = geo_df.reset_index(drop=True)
 
         assert len(geo_df), "No valid patches found inside the provided region of interest."
+
+        if self.scale is not None:
+            geo_df[SopaKeys.SCALE] = self.scale
 
         return ShapesModel.parse(geo_df, transformations=copy_transformations(self.element))
 

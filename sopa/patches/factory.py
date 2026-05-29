@@ -17,6 +17,7 @@ def make_image_patches(
     patch_overlap: int = 50,
     image_key: str | None = None,
     roi_key: str | None = SopaKeys.ROI,
+    scale: str | None = None,
     key_added: str | None = None,
 ):
     """Create overlapping patches on an image. This can be used for image-based segmentation methods such as Cellpose, which will run on each patch.
@@ -27,6 +28,7 @@ def make_image_patches(
         patch_overlap: Number of pixels of overlap between patches.
         image_key: Optional key of the image on which the patches will be made. If not provided, it is found automatically.
         roi_key: Optional name of the shapes that need to touch the patches. Patches that do not touch any shape will be ignored during segmentation. By default, uses `"region_of_interest"` if existing. If `None`, all patches will be used.
+        scale: If the image is a DataTree, the scale to be used for patching (e.g., `"scale1"`). By default, uses the highest resolution scale, i.e., `"scale0"`.
         key_added: Optional name of the patches to be saved. By default, uses `"image_patches"`.
     """
     image_key, _ = get_spatial_image(sdata, key=image_key, return_key=True)
@@ -37,6 +39,7 @@ def make_image_patches(
         patch_width=patch_width,
         patch_overlap=patch_overlap,
         roi_key=roi_key,
+        scale=scale,
     )
 
     patches.add_shapes(key_added=key_added)

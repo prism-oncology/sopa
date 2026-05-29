@@ -10,7 +10,7 @@ from shapely.geometry import MultiPolygon, Point, Polygon, box
 from spatialdata import SpatialData
 from spatialdata.datasets import BlobsDataset
 from spatialdata.models import Image2DModel, PointsModel, ShapesModel
-from spatialdata.transformations import Affine, Identity, Scale
+from spatialdata.transformations import Affine, Identity, Scale, Translation
 
 from ..constants import SopaAttrs, SopaKeys
 
@@ -37,6 +37,8 @@ def toy_dataset(
     continuous_z_stack: bool = False,
     add_second_points_key: bool = False,
     points_3d: bool = False,
+    as_multiscale: bool = False,
+    image_translation: bool = False,
 ) -> SpatialData:
     """Generate a dummy dataset composed of cells generated uniformly in a square. It also has transcripts.
 
@@ -58,6 +60,8 @@ def toy_dataset(
         continuous_z_stack: If `True`, the z-stack values will be continuous (not integers)
         add_second_points_key: If `True`, a second points key will be added to the dataset with dummy data for testing purposes
         points_3d: If `True`, the points will be 3D points instead of 2D points.
+        as_multiscale: If `True`, the image will be saved as a multiscale image with two scales (scale0 and scale1, with scale factor 2).
+        image_translation: If `True`, a translation of (100, 100) will be applied to the image.
 
     Returns:
         A SpatialData object with a 2D image (`sdata["image"]`), the cells polygon boundaries (`sdata["cells"]`), the transcripts (`sdata["transcripts"]`), and optional cell vertices (`sdata["vertices"]`) if `include_vertices` is `True`.
@@ -101,7 +105,15 @@ def toy_dataset(
             image = gaussian_filter(image, sigma=sigma, axes=(1, 2))
         image = (image / image.max() * 255).astype(np.uint8)
         image = da.from_array(image, chunks=(1, 1024, 1024))
-        images["image"] = Image2DModel.parse(image, c_coords=c_coords, dims=["c", "y", "x"])
+        images["image"] = Image2DModel.parse(
+            image,
+            c_coords=c_coords,
+            dims=["c", "y", "x"],
+            scale_factors=[2, 2] if as_multiscale else None,
+            transformations={
+                "global": Translation([100, 100], axes=["x", "y"]) if image_translation else Identity(),
+            },
+        )
 
     if include_he_image:
         he_image = _he_image(length // 2)
