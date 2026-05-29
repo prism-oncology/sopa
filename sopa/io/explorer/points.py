@@ -1,3 +1,4 @@
+import json
 import logging
 from math import ceil
 from pathlib import Path
@@ -6,12 +7,39 @@ import dask.dataframe as dd
 import numpy as np
 import pandas as pd
 import zarr
+from numcodecs import Blosc
 from zarr.storage import ZipStore
 
 from ._constants import ExplorerConstants, FileNames
 from .utils import explorer_file_path
 
 log = logging.getLogger(__name__)
+
+# Must match the compressor the Xenium Explorer expects (verified against existing output).
+_BLOSC = Blosc(cname="lz4", clevel=5, shuffle=Blosc.SHUFFLE)
+_COMPRESSOR_META = {"id": "blosc", "cname": "lz4", "clevel": 5, "shuffle": 1, "blocksize": 0}
+
+
+def _write_zgroup(zf, path: str) -> None:
+    zf.writestr(f"{path}/.zgroup", b'{"zarr_format": 2}')
+
+
+def _write_zarray(zf, path: str, arr: np.ndarray) -> None:
+    arr = np.ascontiguousarray(arr)
+    meta = {
+        "zarr_format": 2,
+        "shape": list(arr.shape),
+        "chunks": list(arr.shape),
+        "dtype": arr.dtype.str,
+        "fill_value": 0,
+        "order": "C",
+        "filters": None,
+        "dimension_separator": ".",
+        "compressor": _COMPRESSOR_META,
+    }
+    zf.writestr(f"{path}/.zarray", json.dumps(meta).encode())
+    chunk_key = ".".join("0" for _ in arr.shape)
+    zf.writestr(f"{path}/{chunk_key}", _BLOSC.encode(arr))
 
 
 def write_transcripts(
@@ -93,7 +121,9 @@ def write_transcripts(
 
     with ZipStore(path, mode="w") as store:
         g = zarr.group(store=store, zarr_format=2, attributes=ATTRS)
-        grids = g.create_group("grids")
+        zf = store._zf  # bypass zarr 3's per-object API overhead; _zf is the underlying ZipFile
+
+        _write_zgroup(zf, "grids")
 
         for level in range(max_levels):
             level_locs = subsampling_locs[level]
@@ -122,23 +152,23 @@ def write_transcripts(
             GRIDS_ATTRS["grid_number_objects"].append([])
             GRIDS_ATTRS["grid_keys"].append([])
 
-            level_group = grids.create_group(str(level))
+            _write_zgroup(zf, f"grids/{level}")
 
             for (gtx, gty), loc in groups.items():
                 str_index = f"{gtx},{gty}"
                 n_pts = len(loc)
                 location = np.concatenate([level_xy[loc], _z(n_pts)], axis=1).astype(np.float32)
-                chunks = (n_pts, 1)
+                base = f"grids/{level}/{str_index}"
 
-                tile_group = level_group.create_group(str_index)
-                tile_group.create_array("valid", data=lv_valid[loc], chunks=chunks)
-                tile_group.create_array("status", data=lv_status[loc], chunks=chunks)
-                tile_group.create_array("location", data=location, chunks=chunks)
-                tile_group.create_array("gene_identity", data=lv_gene_identity[loc], chunks=chunks)
-                tile_group.create_array("quality_score", data=lv_quality[loc], chunks=chunks)
-                tile_group.create_array("codeword_identity", data=lv_codeword[loc], chunks=chunks)
-                tile_group.create_array("uuid", data=lv_uuid[loc], chunks=chunks)
-                tile_group.create_array("id", data=lv_transcript_id[loc], chunks=chunks)
+                _write_zgroup(zf, base)
+                _write_zarray(zf, f"{base}/valid", lv_valid[loc])
+                _write_zarray(zf, f"{base}/status", lv_status[loc])
+                _write_zarray(zf, f"{base}/location", location)
+                _write_zarray(zf, f"{base}/gene_identity", lv_gene_identity[loc])
+                _write_zarray(zf, f"{base}/quality_score", lv_quality[loc])
+                _write_zarray(zf, f"{base}/codeword_identity", lv_codeword[loc])
+                _write_zarray(zf, f"{base}/uuid", lv_uuid[loc])
+                _write_zarray(zf, f"{base}/id", lv_transcript_id[loc])
 
                 GRIDS_ATTRS["grid_array_shapes"][-1].append({})
                 GRIDS_ATTRS["grid_keys"][-1].append(str_index)
@@ -151,7 +181,7 @@ def write_transcripts(
             if level + 1 < max_levels:
                 subsampling_locs[level + 1] = subsample_indices(level_locs)
 
-        grids.attrs.update(GRIDS_ATTRS)
+        zf.writestr("grids/.zattrs", json.dumps(GRIDS_ATTRS).encode())
         _write_density(g, xy, gene_identity[:, 0], gene_names)
 
 
@@ -255,12 +285,14 @@ def _write_density(
 
     root.create_array("metrics_density", data=metrics, chunks=metrics.shape)
 
-    root.attrs["metrics_density_x_count"] = mx_count
-    root.attrs["metrics_density_x_origin"] = float(origin_x)
-    root.attrs["metrics_density_x_spacing"] = spacing
-    root.attrs["metrics_density_y_count"] = my_count
-    root.attrs["metrics_density_y_origin"] = float(origin_y)
-    root.attrs["metrics_density_y_spacing"] = spacing
+    root.attrs.update({
+        "metrics_density_x_count": mx_count,
+        "metrics_density_x_origin": float(origin_x),
+        "metrics_density_x_spacing": spacing,
+        "metrics_density_y_count": my_count,
+        "metrics_density_y_origin": float(origin_y),
+        "metrics_density_y_spacing": spacing,
+    })
 
     log.info(f"   > Density grid: {n_rows}x{n_cols} ({grid_size}µm bins), {density_csr.nnz} non-zero entries")
 
