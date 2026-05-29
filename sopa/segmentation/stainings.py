@@ -198,7 +198,7 @@ class StainingSegmentation:
 
 def _patches_scale(sdata: SpatialData) -> str:
     patches_gdf = sdata[SopaKeys.PATCHES]
-    return patches_gdf[SopaKeys.SCALE][0] if SopaKeys.SCALE in patches_gdf else "scale0"
+    return patches_gdf[SopaKeys.SCALE].iloc[0] if SopaKeys.SCALE in patches_gdf else "scale0"
 
 
 def _channels_average_within_mask(image: np.ndarray, mask: np.ndarray) -> np.ndarray:
