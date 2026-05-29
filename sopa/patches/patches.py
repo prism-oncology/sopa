@@ -91,6 +91,7 @@ class Patches2D:
             patch_overlap: Overlap width between the patches
             roi_key: Optional name of the shapes that need to touch the patches. Patches that do not touch any shape will be ignored. If `None`, all patches will be used.
             use_roi_centroids: If `True`, the ROI will be computed from the centroids of the shapes in `roi_key`. If `False`, the ROI will be computed from the shapes themselves.
+            scale: If the element is a DataTree, the scale to be used for patching (e.g., `"scale1"`). By default, uses the highest resolution scale, i.e., `"scale0"`.
         """
         patch_width = float("inf") if (patch_width is None or patch_width == -1) else patch_width
 

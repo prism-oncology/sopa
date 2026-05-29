@@ -276,6 +276,7 @@ def get_spatial_image(
         sdata: SpatialData object.
         key: Optional image key. If `None`, returns the only image (if only one), or tries to find an image with `valid_attr`.
         return_key: Whether to also return the key of the image.
+        scale: If the image is a `DataTree`, the scale to be used. By default, uses the highest resolution scale, i.e., `"scale0"`.
         valid_attr: Attribute that the image must have to be considered valid.
 
     Returns:
