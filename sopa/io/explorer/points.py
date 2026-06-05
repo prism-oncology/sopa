@@ -1,7 +1,9 @@
 import json
 import logging
+import zipfile
 from math import ceil
 from pathlib import Path
+from typing import Any
 
 import dask.dataframe as dd
 import numpy as np
@@ -15,31 +17,8 @@ from .utils import explorer_file_path
 
 log = logging.getLogger(__name__)
 
-# Must match the compressor the Xenium Explorer expects (verified against existing output).
 _BLOSC = Blosc(cname="lz4", clevel=5, shuffle=Blosc.SHUFFLE)
 _COMPRESSOR_META = {"id": "blosc", "cname": "lz4", "clevel": 5, "shuffle": 1, "blocksize": 0}
-
-
-def _write_zgroup(zf, path: str) -> None:
-    zf.writestr(f"{path}/.zgroup", b'{"zarr_format": 2}')
-
-
-def _write_zarray(zf, path: str, arr: np.ndarray) -> None:
-    arr = np.ascontiguousarray(arr)
-    meta = {
-        "zarr_format": 2,
-        "shape": list(arr.shape),
-        "chunks": list(arr.shape),
-        "dtype": arr.dtype.str,
-        "fill_value": 0,
-        "order": "C",
-        "filters": None,
-        "dimension_separator": ".",
-        "compressor": _COMPRESSOR_META,
-    }
-    zf.writestr(f"{path}/.zarray", json.dumps(meta).encode())
-    chunk_key = ".".join("0" for _ in arr.shape)
-    zf.writestr(f"{path}/{chunk_key}", _BLOSC.encode(arr))
 
 
 def write_transcripts(
@@ -62,7 +41,6 @@ def write_transcripts(
     """
     path = explorer_file_path(path, FileNames.POINTS, is_dir)
 
-    # TODO: make everything using dask instead of pandas
     df = df.compute()
 
     num_transcripts = len(df)
@@ -108,7 +86,7 @@ def write_transcripts(
         "data_format": 0,
     }
 
-    GRIDS_ATTRS = {
+    GRIDS_ATTRS: dict[str, bool | list[Any | list[Any]]] = {
         "grid_key_names": ["grid_x_loc", "grid_y_loc"],
         "grid_zip": False,
         "grid_size": [grid_size],
@@ -132,21 +110,21 @@ def write_transcripts(
             tile_size = grid_size * 2**level
             level_xy = xy[level_locs]
 
-            lv_valid = valid[level_locs]
-            lv_status = status[level_locs]
-            lv_gene_identity = gene_identity[level_locs]
-            lv_codeword = codeword_identity[level_locs]
-            lv_quality = quality_score[level_locs]
-            lv_uuid = uuid[level_locs]
-            lv_transcript_id = transcript_id[level_locs]
+            lvl_valid = valid[level_locs]
+            lvl_status = status[level_locs]
+            lvl_gene_identity = gene_identity[level_locs]
+            lvl_codeword = codeword_identity[level_locs]
+            lvl_quality = quality_score[level_locs]
+            lvl_uuid = uuid[level_locs]
+            lvl_transcript_id = transcript_id[level_locs]
 
             tx = np.floor(level_xy[:, 0] / tile_size).clip(0).astype(int)
             ty = np.floor(level_xy[:, 1] / tile_size).clip(0).astype(int)
+
             # sort=True preserves ascending (tx, ty) order, which GRIDS_ATTRS consumers expect.
             groups = pd.DataFrame({"tx": tx, "ty": ty}).groupby(["tx", "ty"], sort=True).indices
 
-            n_tiles_x = ceil(xmax / tile_size)
-            n_tiles_y = ceil(ymax / tile_size)
+            n_tiles_x, n_tiles_y = ceil(xmax / tile_size), ceil(ymax / tile_size)
 
             GRIDS_ATTRS["grid_array_shapes"].append([])
             GRIDS_ATTRS["grid_number_objects"].append([])
@@ -161,14 +139,14 @@ def write_transcripts(
                 base = f"grids/{level}/{str_index}"
 
                 _write_zgroup(zf, base)
-                _write_zarray(zf, f"{base}/valid", lv_valid[loc])
-                _write_zarray(zf, f"{base}/status", lv_status[loc])
+                _write_zarray(zf, f"{base}/valid", lvl_valid[loc])
+                _write_zarray(zf, f"{base}/status", lvl_status[loc])
                 _write_zarray(zf, f"{base}/location", location)
-                _write_zarray(zf, f"{base}/gene_identity", lv_gene_identity[loc])
-                _write_zarray(zf, f"{base}/quality_score", lv_quality[loc])
-                _write_zarray(zf, f"{base}/codeword_identity", lv_codeword[loc])
-                _write_zarray(zf, f"{base}/uuid", lv_uuid[loc])
-                _write_zarray(zf, f"{base}/id", lv_transcript_id[loc])
+                _write_zarray(zf, f"{base}/gene_identity", lvl_gene_identity[loc])
+                _write_zarray(zf, f"{base}/quality_score", lvl_quality[loc])
+                _write_zarray(zf, f"{base}/codeword_identity", lvl_codeword[loc])
+                _write_zarray(zf, f"{base}/uuid", lvl_uuid[loc])
+                _write_zarray(zf, f"{base}/id", lvl_transcript_id[loc])
 
                 GRIDS_ATTRS["grid_array_shapes"][-1].append({})
                 GRIDS_ATTRS["grid_keys"][-1].append(str_index)
@@ -179,13 +157,35 @@ def write_transcripts(
                 break
 
             if level + 1 < max_levels:
-                subsampling_locs[level + 1] = subsample_indices(level_locs)
+                subsampling_locs[level + 1] = _subsample_indices(level_locs)
 
         zf.writestr("grids/.zattrs", json.dumps(GRIDS_ATTRS).encode())
         _write_density(g, xy, gene_identity[:, 0], gene_names)
 
 
-def subsample_indices(indices: np.ndarray, factor: int = 4) -> np.ndarray:
+def _write_zgroup(zf: zipfile.ZipFile, path: str) -> None:
+    zf.writestr(f"{path}/.zgroup", b'{"zarr_format": 2}')
+
+
+def _write_zarray(zf: zipfile.ZipFile, path: str, arr: np.ndarray) -> None:
+    arr = np.ascontiguousarray(arr)
+    meta = {
+        "zarr_format": 2,
+        "shape": list(arr.shape),
+        "chunks": list(arr.shape),
+        "dtype": arr.dtype.str,
+        "fill_value": 0,
+        "order": "C",
+        "filters": None,
+        "dimension_separator": ".",
+        "compressor": _COMPRESSOR_META,
+    }
+    zf.writestr(f"{path}/.zarray", json.dumps(meta).encode())
+    chunk_key = ".".join("0" for _ in arr.shape)
+    zf.writestr(f"{path}/{chunk_key}", _BLOSC.encode(arr))
+
+
+def _subsample_indices(indices: np.ndarray, factor: int = 4) -> np.ndarray:
     return np.random.choice(indices, len(indices) // factor, replace=False)
 
 
