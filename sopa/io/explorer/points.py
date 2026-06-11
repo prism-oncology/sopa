@@ -17,8 +17,8 @@ from .utils import explorer_file_path
 
 log = logging.getLogger(__name__)
 
-_BLOSC = Blosc(cname="lz4", clevel=5, shuffle=Blosc.SHUFFLE)
-_COMPRESSOR_META = {"id": "blosc", "cname": "lz4", "clevel": 5, "shuffle": 1, "blocksize": 0}
+_BLOSC = Blosc(cname="zstd", clevel=5, shuffle=Blosc.SHUFFLE)
+_COMPRESSOR_META = {"id": "blosc", "cname": "zstd", "clevel": 5, "shuffle": 1, "blocksize": 0}
 
 
 def write_transcripts(
