@@ -1,4 +1,6 @@
 import pandas as pd
+import zarr
+from zarr.storage import ZipStore
 
 import sopa
 from sopa.io.explorer.utils import int_cell_id, is_valid_explorer_id, str_cell_id
@@ -48,3 +50,13 @@ def test_explorer_write():
     sdata = sopa.io.toy_dataset(as_output=True)
 
     sopa.io.explorer.write("tests/out.explorer", sdata)
+
+    with ZipStore("tests/out.explorer/transcripts.zarr.zip") as store:
+        z = zarr.open(store, mode="r")
+
+        LOCS = ["0,0", "0,1", "1,0", "1,1"]
+
+        assert set(z["grids"]["0"].group_keys()) == set(LOCS)
+
+        expected_count = sdata["transcripts"].shape[0].compute()
+        assert sum(z["grids"]["0"][locs]["location"].shape[0] for locs in LOCS) == expected_count
