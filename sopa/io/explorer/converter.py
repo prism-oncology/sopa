@@ -148,7 +148,10 @@ def write(
 
         geo_df_nucleus = None
         if nucleus_shapes_key is not None:
+            assert nucleus_shapes_key in sdata.shapes, f"No '{nucleus_shapes_key}' found in `sdata.shapes`."
+
             geo_df_nucleus = to_intrinsic(sdata, nucleus_shapes_key, image_key)
+
             assert geo_df.index.isin(geo_df_nucleus.index).all(), (
                 "Cell IDs (`sdata[shapes_key].index`) should match the nuclei IDs."
             )
