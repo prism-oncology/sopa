@@ -52,38 +52,31 @@ def pad_polygon(polygon: Polygon, max_vertices: int, tolerance: float = TOLERANC
 def write_polygons(
     path: Path,
     geo_df: gpd.GeoDataFrame,
+    geo_df_nucleus: gpd.GeoDataFrame | None,
     max_vertices: int,
-    is_dir: bool = True,
     pixel_size: float = 0.2125,
     preserve_ids: bool = True,
+    is_dir: bool = True,
 ) -> None:
     """Write a `cells.zarr.zip` file containing the cell polygonal boundaries
 
     Args:
         path: Path to the Xenium Explorer directory where the transcript file will be written
         geo_df: A GeoDataFrame containing the `shapely` polygons to be written
+        geo_df_nucleus: Same as `geo_df` but for the cells' nucleus
         max_vertices: The number of vertices per polygon (they will be transformed to have the right number of vertices)
-        is_dir: If `False`, then `path` is a path to a single file, not to the Xenium Explorer directory.
         pixel_size: Number of microns in a pixel. Invalid value can lead to inconsistent scales in the Explorer.
         preserve_ids: If `True`, will preserve the cell IDs from `geo_df.index` in the explorer (they need to be valid Xenium Explorer IDs). If `False`, will use new IDs for the output file.
+        is_dir: If `False`, then `path` is a path to a single file, not to the Xenium Explorer directory.
     """
-    assert isinstance(geo_df, gpd.GeoDataFrame), "geo_df must be a GeoDataFrame"
-
-    polygons = geo_df.geometry.values
-
-    assert all(isinstance(geom, (Polygon, MultiPolygon)) for geom in polygons), (
-        "All geometries must be a `shapely.Polygon` or `shapely.MultiPolygon`"
-    )
-
-    if any(isinstance(geom, MultiPolygon) for geom in polygons):
-        log.warning("Some cells are MultiPolygons. Only the polygon with the largest area will be kept for each cell.")
-        polygons = [_to_largest_polygon(p) for p in polygons]
-
     path = explorer_file_path(path, FileNames.SHAPES, is_dir)
 
+    polygons, coordinates = _extract_coordinates(geo_df, max_vertices, pixel_size=pixel_size)
+    coordinates_nucleus = (
+        coordinates if geo_df_nucleus is None else _extract_coordinates(geo_df_nucleus, max_vertices, pixel_size)[1]
+    )
+
     log.info(f"Writing {len(polygons)} cell polygons")
-    coordinates = np.stack([pad_polygon(p, max_vertices) for p in polygons])
-    coordinates *= pixel_size
 
     num_cells = len(coordinates)
     cells_fourth = ceil(num_cells / 4)
@@ -92,7 +85,7 @@ def write_polygons(
     GROUP_ATTRS = group_attrs()
     GROUP_ATTRS["number_cells"] = num_cells
 
-    polygon_vertices = np.stack([coordinates, coordinates])
+    polygon_vertices = np.stack([coordinates_nucleus, coordinates])
     num_points = polygon_vertices.shape[2]
     n_vertices = num_points // 2
 
@@ -124,6 +117,25 @@ def write_polygons(
             data=np.arange(num_cells, dtype=np.uint32),
             chunks=(cells_half,),
         )
+
+
+def _extract_coordinates(
+    geo_df: gpd.GeoDataFrame, max_vertices: int, pixel_size: float
+) -> tuple[list[Polygon], np.ndarray]:
+    polygons = geo_df.geometry.values
+
+    assert all(isinstance(geom, (Polygon, MultiPolygon)) for geom in polygons), (
+        "All geometries must be a `shapely.Polygon` or `shapely.MultiPolygon`"
+    )
+
+    if any(isinstance(geom, MultiPolygon) for geom in polygons):
+        log.warning("Some cells are MultiPolygons. Only the polygon with the largest area will be kept for each cell.")
+        polygons = [_to_largest_polygon(p) for p in polygons]
+
+    coordinates = np.stack([pad_polygon(p, max_vertices) for p in polygons])
+    coordinates *= pixel_size
+
+    return polygons, coordinates
 
 
 def _to_largest_polygon(polygon: Polygon | MultiPolygon) -> Polygon:

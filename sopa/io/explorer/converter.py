@@ -41,6 +41,7 @@ def write(
     table_key: str = SopaKeys.TABLE,
     image_key: str | None = None,
     shapes_key: str | None = None,
+    nucleus_shapes_key: str | None = None,
     points_key: str | None = None,
     gene_column: str | None = None,
     pixel_size: float = 0.2125,
@@ -86,6 +87,7 @@ def write(
         table_key: Name of the table containing the gene counts or intensities (key of `sdata.tables`). By default, uses `sdata["table"]`.
         image_key: Name of the image of interest (key of `sdata.images`). By default, it will be inferred.
         shapes_key: Name of the cell shapes (key of `sdata.shapes`). By default, it will be inferred from the table.
+        nucleus_shapes_key: Optional extra key of `sdata.shapes` to show nucleus boundaries (`shapes_key` being used to show the cells boundaries). By default, use `shapes_key` for both nucleus and cell boundaries.
         points_key: Name of the transcripts (key of `sdata.points`). By default, it will be inferred.
         gene_column: Column name of the points dataframe containing the gene names.
         pixel_size: Number of microns in a pixel. Invalid value can lead to inconsistent scales in the Explorer.
@@ -144,7 +146,18 @@ def write(
         if preserve_ids is None:
             preserve_ids = _update_preserve_ids(geo_df.index)
 
-        write_polygons(path, geo_df, polygon_max_vertices, pixel_size=pixel_size, preserve_ids=preserve_ids)
+        geo_df_nucleus = None
+        if nucleus_shapes_key is not None:
+            assert nucleus_shapes_key in sdata.shapes, f"No '{nucleus_shapes_key}' found in `sdata.shapes`."
+
+            geo_df_nucleus = to_intrinsic(sdata, nucleus_shapes_key, image_key)
+
+            assert geo_df.index.isin(geo_df_nucleus.index).all(), (
+                "Cell IDs (`sdata[shapes_key].index`) should match the nuclei IDs."
+            )
+            geo_df_nucleus = geo_df_nucleus.loc[geo_df.index]
+
+        write_polygons(path, geo_df, geo_df_nucleus, polygon_max_vertices, pixel_size, preserve_ids)
 
     ### Saving transcripts
     df = None
