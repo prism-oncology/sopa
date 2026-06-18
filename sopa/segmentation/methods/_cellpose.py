@@ -36,7 +36,7 @@ def cellpose(
     """Run [Cellpose](https://cellpose.readthedocs.io/en/latest/) segmentation on a SpatialData object, and add a GeoDataFrame containing the cell boundaries.
 
     !!! warning "Cellpose installation"
-        Make sure to install the cellpose extra (`pip install 'sopa[cellpose]'`) for this method to work.
+        Make sure to install the cellpose extra (`pip install 'sopa[cellpose]'`) for this method to work. Note that `cellpose<4.0.0` is much faster that `>=4.0.0`, and is the recommended version is you have CPUs only.
 
     !!! info "Diameter parameter"
         The `diameter` parameter is used to estimate the expected cell diameter (in pixels). This is a crucial parameter for the segmentation.
@@ -45,8 +45,8 @@ def cellpose(
         sdata: A `SpatialData` object
         channels: Name of the channel(s) to be used for segmentation. If one channel, must be a nucleus channel. If a `list` of channels, it must be a cytoplasmic channel and then a nucleus channel.
         diameter: The Cellpose parameter for the expected cell diameter (in pixel).
-        model_type: Cellpose model type.
-        pretrained_model: Path to the pretrained model to be loaded, or `None`
+        model_type: Cellpose model type, only if using `cellpose<4.0.0`.
+        pretrained_model: Name of the pretrained model (e.g., `"cpsam_v2"` if using `cellpose>=4.0.0`), or path to the pretrained model to be loaded, or `None`.
         gpu: Whether to use GPU for segmentation.
         image_key: Name of the image in `sdata` to be used for segmentation.
         min_area: Minimum area of a cell to be considered. By default, it is calculated based on the `diameter` parameter.
@@ -122,7 +122,9 @@ def cellpose_patch(
     except ImportError:
         raise ImportError("To use cellpose, you need its corresponding sopa extra: `pip install 'sopa[cellpose]'`.")
 
-    if Version(version) >= Version("4.0.0"):
+    is_v4 = Version(version) >= Version("4.0.0")
+
+    if is_v4:
         if not pretrained_model:
             log.info(f"You use cellpose={version}, which requires a `pretrained_model`. Defaulting to 'cpsam'.")
             pretrained_model = "cpsam"
@@ -154,7 +156,7 @@ def cellpose_patch(
             channels = [0, 0]  # gray scale
         elif len(channels) == 2:
             channels = [1, 2]
-        else:
+        elif not is_v4:
             raise ValueError(f"Provide 1 or 2 channels. Found {len(channels)}")
 
         mask, *_ = model.eval(patch, diameter=diameter, channels=channels, **cellpose_eval_kwargs)
