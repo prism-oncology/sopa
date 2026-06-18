@@ -21,7 +21,7 @@ def cellpose(
     model_type: str = typer.Option("cyto3", help="Name of the cellpose model if using `cellpose<4.0.0`."),
     pretrained_model: str = typer.Option(
         None,
-        help="Name of pretrained model (e.g., `cpsam_v2`, if using `cellpose>=4.0.0`), or path to the pretrained model to be loaded, or `None`.",
+        help="Name of pretrained model (e.g., `cpsam`, if using `cellpose>=4.0.0`), or path to the pretrained model to be loaded, or `None`.",
     ),
     gpu: bool = typer.Option(False, help="Whether to use the GPU (recommended for cellpose>=4.0.0)"),
     min_area: int = typer.Option(0, help="Minimum area (in pixels^2) for a cell to be considered as valid"),

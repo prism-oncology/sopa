@@ -46,7 +46,7 @@ def cellpose(
         channels: Name of the channel(s) to be used for segmentation. If one channel, must be a nucleus channel. If a `list` of channels, it must be a cytoplasmic channel and then a nucleus channel.
         diameter: The Cellpose parameter for the expected cell diameter (in pixel).
         model_type: Cellpose model type, only if using `cellpose<4.0.0`.
-        pretrained_model: Name of the pretrained model (e.g., `"cpsam_v2"` if using `cellpose>=4.0.0`), or path to the pretrained model to be loaded, or `None`.
+        pretrained_model: Name of the pretrained model (e.g., `"cpsam"` if using `cellpose>=4.0.0`), or path to the pretrained model to be loaded, or `None`.
         gpu: Whether to use GPU for segmentation.
         image_key: Name of the image in `sdata` to be used for segmentation.
         min_area: Minimum area of a cell to be considered. By default, it is calculated based on the `diameter` parameter.
