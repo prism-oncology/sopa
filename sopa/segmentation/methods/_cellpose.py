@@ -156,10 +156,12 @@ def cellpose_patch(
             channels = [0, 0]  # gray scale
         elif len(channels) == 2:
             channels = [1, 2]
-        elif not is_v4:
-            raise ValueError(f"Provide 1 or 2 channels. Found {len(channels)}")
+        elif len(channels) == 3:
+            assert is_v4, "Using 3 channels is only available for `cellpose>=4.0.0`."
+        else:
+            raise ValueError(f"Provide 1, 2, or 3 channels. Found {len(channels)}.")
 
-        mask, *_ = model.eval(patch, diameter=diameter, channels=channels, **cellpose_eval_kwargs)
+        mask, *_ = model.eval(patch, diameter=diameter, channels=None if is_v4 else channels, **cellpose_eval_kwargs)
         return mask
 
     return partial(
