@@ -18,8 +18,11 @@ def cellpose(
     ),
     flow_threshold: float = typer.Option(2, help="Cellpose `flow_threshold` parameter"),
     cellprob_threshold: float = typer.Option(-6, help="Cellpose `cellprob_threshold` parameter"),
-    model_type: str = typer.Option("cyto3", help="Name of the cellpose model"),
-    pretrained_model: str = typer.Option(None, help="Path to the pretrained model to be loaded"),
+    model_type: str = typer.Option("cyto3", help="Name of the cellpose model if using `cellpose<4.0.0`."),
+    pretrained_model: str = typer.Option(
+        None,
+        help="Name of pretrained model (e.g., `cpsam`, if using `cellpose>=4.0.0`), or path to the pretrained model to be loaded, or `None`.",
+    ),
     gpu: bool = typer.Option(False, help="Whether to use the GPU (recommended for cellpose>=4.0.0)"),
     min_area: int = typer.Option(0, help="Minimum area (in pixels^2) for a cell to be considered as valid"),
     clip_limit: float = typer.Option(
