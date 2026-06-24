@@ -87,10 +87,11 @@ def resolve(
 
     log.info(f"Added sdata.tables['{SopaKeys.TABLE}'], and {len(geo_df)} cell boundaries to sdata['{key_added}']")
 
+
 def _read_baysor_loom(loom_file: Path, obs_names: str, var_names: str) -> AnnData:
     """Read a Baysor loom into an `AnnData`.
 
-    looms written with a transposed `/matrix` (cells x genes instead of 
+    looms written with a transposed `/matrix` (cells x genes instead of
     genes x cells, as the Baysor Cpp does) can still be read.
     """
     import loompy
@@ -98,7 +99,7 @@ def _read_baysor_loom(loom_file: Path, obs_names: str, var_names: str) -> AnnDat
     with loompy.connect(str(loom_file), "r", validate=False) as ds:
         matrix = ds[:, :]
         gene_names = np.asarray(ds.ra[var_names]).astype(str)
-        col_attrs = {key: np.asarray(ds.ca[key]) for key in ds.ca.keys()}
+        col_attrs = {key: np.asarray(ds.ca[key]) for key in ds.ca}
 
     n_genes, n_cells = len(gene_names), len(col_attrs[obs_names])
 
