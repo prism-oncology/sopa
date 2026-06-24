@@ -146,7 +146,7 @@ def _get_baysor_command(prior_shapes_key: str | None) -> str:
 
     prior_suffix = f" :{prior_shapes_key}" if prior_shapes_key else ""  # use a prior segmentation
 
-    return f"{baysor_executable_path} run {polygon_format} -c config.toml transcripts.csv" + prior_suffix
+    return f"{baysor_executable_path} run {polygon_format} -c config.toml transcripts.csv -o ." + prior_suffix
 
 
 def _use_polygons_format_argument(baysor_executable_path: str) -> bool:
