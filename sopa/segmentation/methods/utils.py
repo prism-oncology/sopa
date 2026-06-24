@@ -96,27 +96,17 @@ def _read_baysor_loom(loom_file: Path, obs_names: str, var_names: str) -> AnnDat
     """
     import loompy
 
-    with loompy.connect(str(loom_file), "r", validate=False) as ds:
+    with loompy.connect(loom_file, "r", validate=False) as ds:
         matrix = ds[:, :]
-        gene_names = np.asarray(ds.ra[var_names]).astype(str)
-        col_attrs = {key: np.asarray(ds.ca[key]) for key in ds.ca}
+        var = pd.DataFrame(index=pd.Index(np.asarray(ds.ra[var_names])))
+        obs = pd.DataFrame({key: np.asarray(ds.ca[key]) for key in ds.ca})
+        obs = obs.set_index(obs_names)
 
-    n_genes, n_cells = len(gene_names), len(col_attrs[obs_names])
-
-    if matrix.shape == (n_genes, n_cells):
+    # Baysor Cpp writes a transposed (genes x cells) matrix; orient it to cells x genes
+    if matrix.shape == (var.shape[0], obs.shape[0]):
         matrix = matrix.T
-    elif matrix.shape != (n_cells, n_genes):
-        raise ValueError(f"Unexpected loom matrix shape {matrix.shape} for {n_genes=}, {n_cells=}")
-
-    obs = pd.DataFrame(
-        {
-            key: val.astype(str) if val.dtype.kind in "SUO" else val
-            for key, val in col_attrs.items()
-            if key != obs_names
-        },
-        index=pd.Index(col_attrs[obs_names].astype(str)),
-    )
-    var = pd.DataFrame(index=pd.Index(gene_names))
+    elif matrix.shape != (obs.shape[0], var.shape[0]):
+        raise ValueError(f"Unexpected loom matrix shape {matrix.shape} for {var.shape[0]=}, {obs.shape[0]=}")
 
     return AnnData(X=np.ascontiguousarray(matrix, dtype=np.float32), obs=obs, var=var)
 
