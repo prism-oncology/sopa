@@ -14,7 +14,7 @@ theme:
     primary: indigo
 nav:
   - Home: index.md
-  - Getting Started: getting_started.md
+  - Getting started: getting_started.md
   - Tutorials:
       - API usage: tutorials/api_usage.ipynb
       - Snakemake pipeline: tutorials/snakemake.md
