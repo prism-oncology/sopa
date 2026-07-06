@@ -73,7 +73,7 @@ checkpoint patchify_image:
         patches_file = paths.smk_patches_file_image,
         patches = touch(paths.smk_patches),
     params:
-        patchify_image = args["patchify"].as_cli(contains="pixel"),
+        patchify_image = args["patchify"].as_cli(contains=["pixel", "scale"]),
         sdata_path = paths.sdata_path,
     conda:
         "sopa"
