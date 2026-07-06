@@ -3,6 +3,7 @@ read:
   technology: merscope
 
 patchify:
+  scale: "scale0"
   patch_width_pixel: 6000
   patch_overlap_pixel: 150
   patch_width_microns: 1000

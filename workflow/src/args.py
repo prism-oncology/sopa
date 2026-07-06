@@ -45,7 +45,7 @@ class Args:
         if self.transcript_based_method is None:
             return ""
 
-        params = self["patchify"].as_cli(contains="micron")
+        params = self["patchify"].as_cli(contains=["micron"])
 
         if self.transcript_based_method == "comseg":
             params += " --write-cells-centroids"
@@ -56,13 +56,13 @@ class Args:
     ### The methods below are used to convert the Args object into a string for the Sopa CLI
 
     def as_cli(
-        self, keys: list[str] | None = None, contains: str | None = None, exclude: list[str] | None = None
+        self, keys: list[str] | None = None, contains: list[str] | None = None, exclude: list[str] | None = None
     ) -> str:
         """Extract a subset of the config (or the whole config) as a string for the CLI (command-line interface)
 
         Args:
             keys: List of keys to extract from the config.
-            contains: String that must be contained in the keys to be extracted.
+            contains: List of strings; a key is extracted if it contains any of them.
             exclude: List of keys to exclude from the config.
 
         Returns:
@@ -88,7 +88,7 @@ class Args:
         elif contains is not None:
             sub_args = Args(
                 self.paths,
-                {key: value for key, value in self.config.items() if contains in key},
+                {key: value for key, value in self.config.items() if any(sub in key for sub in contains)},
             )
 
         return str(sub_args)

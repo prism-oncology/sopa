@@ -13,6 +13,10 @@ def image(
         100,
         help="Number of overlapping pixels between the patches. We advise to choose approximately twice the diameter of a cell",
     ),
+    scale: str = typer.Option(
+        None,
+        help='The scale to be used for patching (e.g., `"scale1"`). By default, uses the highest resolution scale.',
+    ),
 ):
     """Prepare patches for staining-based segmentation (including Cellpose)"""
     import sopa
@@ -21,7 +25,7 @@ def image(
 
     sdata = read_zarr_standardized(sdata_path)
 
-    sopa.make_image_patches(sdata, patch_width_pixel, patch_overlap_pixel)
+    sopa.make_image_patches(sdata, patch_width=patch_width_pixel, patch_overlap=patch_overlap_pixel, scale=scale)
 
     n_patches = len(sdata[SopaKeys.PATCHES])
     _save_cache(sdata_path, SopaFiles.PATCHES_FILE_IMAGE, n_patches)
