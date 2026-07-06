@@ -3,7 +3,6 @@ read:
   technology: xenium
 
 patchify:
-  scale: "scale0"
   patch_width_pixel: 2000
   patch_overlap_pixel: 150
   patch_width_microns: 1000
