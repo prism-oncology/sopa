@@ -124,7 +124,9 @@ def mean_distance(
 
         if (not ignore_zeros) and (group_key == target_group_key):
             # distance to cell to same group is 0, we don't correct it
-            df_distances.values[np.diag_indices_from(df_distances)] = 0
+            values = df_distances.to_numpy(copy=True)
+            np.fill_diagonal(values, 0)
+            df_distances.iloc[:, :] = values
 
     return df_distances
 
