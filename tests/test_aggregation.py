@@ -126,7 +126,8 @@ def test_aggregation_more_cells():
 
     x, y = transcript_locs.T
 
-    gene_names = np.concatenate([adata_original.var_names.values[None, :].repeat(counts[i]) for i in range(n_cells)])
+    var_names = np.asarray(adata_original.var_names)
+    gene_names = np.concatenate([var_names[None, :].repeat(counts[i]) for i in range(n_cells)])
 
     df_pandas = pd.DataFrame({
         "x": x,
