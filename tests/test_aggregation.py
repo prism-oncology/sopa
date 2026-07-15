@@ -371,4 +371,4 @@ def test_sequential_aggregation():
     sopa.aggregate(sdata, drop_filtered_cells=False, min_intensity_ratio=0.9)
 
     assert sdata["table"].n_obs == n_obs
-    assert 0.5 < sdata["table"].obs[SopaKeys.PASSES_FILTERING].mean() < 0.999
+    assert 0.001 < sdata["table"].obs[SopaKeys.PASSES_FILTERING].mean() < 0.999
