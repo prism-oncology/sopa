@@ -88,29 +88,6 @@ def resolve(
     log.info(f"Added sdata.tables['{SopaKeys.TABLE}'], and {len(geo_df)} cell boundaries to sdata['{key_added}']")
 
 
-def _read_baysor_loom(loom_file: Path, obs_names: str, var_names: str) -> AnnData:
-    """Read a Baysor loom into an `AnnData`.
-
-    looms written with a transposed `/matrix` (cells x genes instead of
-    genes x cells, as the Baysor Cpp does) can still be read.
-    """
-    import loompy
-
-    with loompy.connect(loom_file, "r", validate=False) as ds:
-        matrix = ds[:, :]
-        var = pd.DataFrame(index=pd.Index(np.asarray(ds.ra[var_names])))
-        obs = pd.DataFrame({key: np.asarray(ds.ca[key]) for key in ds.ca})
-        obs = obs.set_index(obs_names)
-
-    # Baysor Cpp writes a transposed (genes x cells) matrix; orient it to cells x genes
-    if matrix.shape == (var.shape[0], obs.shape[0]):
-        matrix = matrix.T
-    elif matrix.shape != (obs.shape[0], var.shape[0]):
-        raise ValueError(f"Unexpected loom matrix shape {matrix.shape} for {var.shape[0]=}, {obs.shape[0]=}")
-
-    return AnnData(X=np.ascontiguousarray(matrix, dtype=np.float32), obs=obs, var=var)
-
-
 def _read_one_segmented_patch(
     directory: str, min_area: float = 0, min_vertices: int = 4
 ) -> tuple[list[Polygon], AnnData]:
@@ -119,12 +96,7 @@ def _read_one_segmented_patch(
 
     loom_file = directory / "segmentation_counts.loom"
     if loom_file.exists():
-        try:
-            adata = anndata.io.read_loom(loom_file, obs_names="Name", var_names="Name")
-        except ValueError:
-            # Re-read transposed (cells x genes) matrix with loompy using
-            # `validate=False` and rebuild the AnnData with the right orientation.
-            adata = _read_baysor_loom(loom_file, obs_names="Name", var_names="Name")
+        adata = anndata.io.read_loom(directory / "segmentation_counts.loom", obs_names="Name", var_names="Name")
     else:
         adata = anndata.io.read_h5ad(directory / "segmentation_counts.h5ad")
 
