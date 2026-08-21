@@ -1,5 +1,7 @@
+import contextlib
 import importlib.metadata
 import logging
+import os
 import sys
 from ._logging import configure_logger
 
@@ -8,8 +10,27 @@ __version__ = importlib.metadata.version("sopa")
 log = logging.getLogger("sopa")
 configure_logger(log)
 
+
+def _configure_anndata():
+    """Write string columns in the legacy (non-nullable) format.
+
+    Since pandas 3, anndata defaults to the `nullable-string-array` encoding, which
+    external readers (e.g. proseg) can't parse.
+    """
+    import anndata
+
+    if "ANNDATA_ALLOW_WRITE_NULLABLE_STRINGS" in os.environ:
+        return
+
+    with contextlib.suppress(AttributeError, ValueError):
+        anndata.settings.allow_write_nullable_strings = False
+
+
 if not any(f"--{option}" in sys.argv for option in ["version", "help"]):  # no import for cli helpers
     from ._settings import settings
+
+    _configure_anndata()
+
     from . import utils
     from . import shapes
     from . import io
