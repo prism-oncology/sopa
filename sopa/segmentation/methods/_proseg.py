@@ -1,6 +1,7 @@
 import logging
 from pathlib import Path
 
+import anndata
 import geopandas as gpd
 import numpy as np
 import pandas as pd
@@ -162,7 +163,8 @@ def _proseg_bins(
 
     work_dir = get_cache_dir(sdata)
 
-    bins_table.write_zarr(work_dir / "bins_table.zarr")
+    with anndata.settings.override(allow_write_nullable_strings=False):  # fix #441
+        bins_table.write_zarr(work_dir / "bins_table.zarr")
 
     proseg_command = _get_proseg_bins_command(sdata, command_line_suffix, infer_presets)
 
