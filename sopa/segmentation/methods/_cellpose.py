@@ -159,7 +159,7 @@ def cellpose_patch(
     )
 
 
-def _cellpose_version_check(pretrained_model: str | None, gpu: bool = False) -> tuple[bool, str | None]:
+def _cellpose_version_check(pretrained_model: str | None, gpu: bool | None = None) -> tuple[bool, str | None]:
     try:
         from cellpose import version
     except ImportError:
@@ -172,7 +172,7 @@ def _cellpose_version_check(pretrained_model: str | None, gpu: bool = False) -> 
             log.info(f"You use cellpose={version}, which requires a `pretrained_model`. Defaulting to 'cpsam'.")
             pretrained_model = "cpsam"
 
-        if not gpu:
+        if gpu is False:
             log.warning(
                 f"You use cellpose={version}, which can be slow without a GPU. Consider using `gpu=True`, or downgrading to `cellpose<4.0.0`."
             )
