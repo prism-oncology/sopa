@@ -16,7 +16,6 @@ def cellpose(
         None,
         help="Directory where the model is stored. By default, uses the cellpose default directory (`~/.cellpose/models`, or `$CELLPOSE_LOCAL_MODELS_PATH`)",
     ),
-    gpu: bool = typer.Option(False, help="Whether to instantiate the model on GPU"),
     method_kwargs: str = typer.Option(
         {},
         callback=ast.literal_eval,
@@ -37,12 +36,11 @@ def cellpose(
 
     log = logging.getLogger(__name__)
 
-    _, pretrained_model = _cellpose_version_check(pretrained_model, gpu)
+    _, pretrained_model = _cellpose_version_check(pretrained_model)
 
     model = load_cellpose_model(
         model_type=model_type,
         pretrained_model=pretrained_model,
-        gpu=gpu,
         cellpose_model_kwargs=method_kwargs,
     )
 

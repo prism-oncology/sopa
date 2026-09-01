@@ -133,7 +133,6 @@ def cellpose_patch(
         model = load_cellpose_model(
             model_type=model_type,
             pretrained_model=pretrained_model,
-            gpu=gpu,
             cellpose_model_kwargs=cellpose_model_kwargs,
         )
 
@@ -160,7 +159,7 @@ def cellpose_patch(
     )
 
 
-def _cellpose_version_check(pretrained_model: str | None, gpu: bool) -> tuple[bool, str | None]:
+def _cellpose_version_check(pretrained_model: str | None, gpu: bool = False) -> tuple[bool, str | None]:
     try:
         from cellpose import version
     except ImportError:
@@ -184,7 +183,6 @@ def _cellpose_version_check(pretrained_model: str | None, gpu: bool) -> tuple[bo
 def load_cellpose_model(
     model_type: str = "cyto3",
     pretrained_model: str | None = None,
-    gpu: bool = False,
     cellpose_model_kwargs: dict | None = None,
 ):
     """Instantiate a Cellpose model. If the model is not already on disk,it is downloaded.
@@ -192,7 +190,6 @@ def load_cellpose_model(
     Args:
         model_type: Cellpose model type, only if using `cellpose<4.0.0`.
         pretrained_model: Name of the pretrained model (e.g., `"cpsam"` if using `cellpose>=4.0.0`), or path to the pretrained model to be loaded, or `None`.
-        gpu: Whether to use GPU.
         cellpose_model_kwargs: Dictionary of kwargs to be provided to the `cellpose.models.CellposeModel` object.
 
     Returns:
@@ -203,5 +200,5 @@ def load_cellpose_model(
     cellpose_model_kwargs = cellpose_model_kwargs or {}
 
     if pretrained_model:
-        return models.CellposeModel(gpu=gpu, pretrained_model=pretrained_model, **cellpose_model_kwargs)
-    return models.Cellpose(gpu=gpu, model_type=model_type, **cellpose_model_kwargs)
+        return models.CellposeModel(pretrained_model=pretrained_model, **cellpose_model_kwargs)
+    return models.Cellpose(model_type=model_type, **cellpose_model_kwargs)
