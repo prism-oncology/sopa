@@ -4,7 +4,7 @@ import logging
 import typer
 
 from .annotate import app_annotate
-from .cache import app_cache
+from .download import app_download
 from .explorer import app_explorer
 from .patchify import app_patchify
 from .resolve import app_resolve
@@ -31,9 +31,9 @@ app.add_typer(
 )
 app.add_typer(app_resolve, name="resolve", help="Resolve the segmentation conflicts over patches overlaps")
 app.add_typer(
-    app_cache,
-    name="cache",
-    help="Pre-download the model weights used by the segmentation methods",
+    app_download,
+    name="download",
+    help="Download the model weights used by the segmentation methods, so that they are cached before running the segmentation",
 )
 app.add_typer(
     app_patchify,

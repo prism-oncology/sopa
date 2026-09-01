@@ -2,10 +2,10 @@ import ast
 
 import typer
 
-app_cache = typer.Typer()
+app_download = typer.Typer()
 
 
-@app_cache.command()
+@app_download.command()
 def cellpose(
     model_type: str = typer.Option("cyto3", help="Name of the cellpose model if using `cellpose<4.0.0`."),
     pretrained_model: str = typer.Option(
@@ -47,7 +47,7 @@ def cellpose(
     log.info(f"Cellpose model '{pretrained_model or model_type}' is cached and ready to be used.")
 
 
-@app_cache.command()
+@app_download.command()
 def stardist(
     model_type: str = typer.Option("2D_versatile_he", help="Name of the stardist model."),
     model_dir: str = typer.Option(
