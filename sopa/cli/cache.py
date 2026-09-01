@@ -38,20 +38,10 @@ def cellpose(
 
     _, pretrained_model = _cellpose_version_check(pretrained_model)
 
-    model = load_cellpose_model(
+    load_cellpose_model(
         model_type=model_type,
         pretrained_model=pretrained_model,
         cellpose_model_kwargs=method_kwargs,
     )
 
-    model_path = _cellpose_model_path(model)
-
     log.info(f"Cellpose model '{pretrained_model or model_type}' is cached and ready to be used.")
-
-    typer.echo(model_path)  # stdout, so it can be captured by a workflow manager for nf-core/sopa
-
-
-def _cellpose_model_path(model) -> str:
-    model = getattr(model, "cp", model)
-
-    return model.pretrained_model
