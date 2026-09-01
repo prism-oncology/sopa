@@ -85,19 +85,8 @@ def stardist_patch(
 ) -> Callable:
     try:
         from csbdeep.utils import normalize
-        from stardist.models import StarDist2D
     except ImportError:
         raise ImportError("To use stardist, you need its corresponding sopa extra: `pip install 'sopa[stardist]'`.")
-
-    def _load_model(model_type: str, local_model: str | None) -> StarDist2D:
-        if local_model is None:
-            return StarDist2D.from_pretrained(model_type)
-
-        model_path = Path(local_model).absolute()
-        if not model_path.is_dir():
-            raise FileNotFoundError(f"StarDist model directory not found: {model_path}")
-
-        return StarDist2D(None, name=model_path.name, basedir=str(model_path.parent))
 
     def _(
         patch: np.ndarray,
@@ -108,7 +97,7 @@ def stardist_patch(
         **stardist_eval_kwargs,
     ):
         with SuppressPrintsAndWarnings():
-            model = _load_model(model_type, local_model)
+            model = load_stardist_model(model_type=model_type, local_model=local_model)
 
             patch = normalize(patch.transpose(1, 2, 0), clip=True)
             mask, _ = model.predict_instances(
@@ -125,6 +114,31 @@ def stardist_patch(
         nms_thresh=nms_thresh,
         **stardist_eval_kwargs,
     )
+
+
+def load_stardist_model(model_type: str | None = "2D_versatile_he", local_model: str | None = None):
+    """Instantiate a StarDist model. If the pretrained model is not already on disk, it is downloaded.
+
+    Args:
+        model_type: Stardist model name.
+        local_model: Path to a local StarDist model. If `None`, the pretrained model specified by `model_type` will be used.
+
+    Returns:
+        A `stardist.models.StarDist2D` object.
+    """
+    try:
+        from stardist.models import StarDist2D
+    except ImportError:
+        raise ImportError("To use stardist, you need its corresponding sopa extra: `pip install 'sopa[stardist]'`.")
+
+    if local_model is None:
+        return StarDist2D.from_pretrained(model_type)
+
+    model_path = Path(local_model).absolute()
+    if not model_path.is_dir():
+        raise FileNotFoundError(f"StarDist model directory not found: {model_path}")
+
+    return StarDist2D(None, name=model_path.name, basedir=str(model_path.parent))
 
 
 class SuppressPrintsAndWarnings:
