@@ -1,0 +1,1751 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../he/">
+      
+      
+        <link rel="next" href="../comseg/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/sopa_favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Command line interface - Sopa</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../css/termynal.css">
+    
+      <link rel="stylesheet" href="../../css/custom.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#cli-helper" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Sopa" class="md-header__button md-logo" aria-label="Sopa" data-md-component="logo">
+      
+  <img src="../../assets/sopa_small_white.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Sopa
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Command line interface
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/prism-oncology/sopa" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    prism-oncology/sopa
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Sopa" class="md-nav__button md-logo" aria-label="Sopa" data-md-component="logo">
+      
+  <img src="../../assets/sopa_small_white.png" alt="logo">
+
+    </a>
+    Sopa
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/prism-oncology/sopa" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    prism-oncology/sopa
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting_started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API usage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../snakemake/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Snakemake pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../techno_specific/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tech-specific advice
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../xenium_explorer/explorer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Xenium Explorer usage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../align/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Landmark-based alignment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../compare_segmentations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Comparing segmentations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spatial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spatial operations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../visium_hd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visium HD tutorial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../he/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    H&amp;E usage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Command line interface
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Command line interface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#cli-helper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLI helper
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#save-the-spatialdata-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Save the SpatialData object
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run-segmentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run segmentation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Run segmentation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-1-cellpose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 1: Cellpose
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-2-baysor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 2: Baysor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-3-custom-staining-based" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 3: Custom staining-based
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#aggregation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Aggregation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#annotation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Annotation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pipeline-report" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pipeline report
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#visualization-xenium-explorer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Visualization (Xenium Explorer)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-analyses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Further analyses
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_11" id="__nav_3_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Other segmentations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Other segmentations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../comseg/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ComSeg usage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../multi_step_segmentation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multi-step
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../custom_segmentation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom segmentation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/readers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Readers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/patches/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Patches
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/segmentation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Segmentation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/aggregation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Aggregation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/spatial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spatial operations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Utils
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/misc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Misc
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Frequently asked questions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cite_us/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cite us
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#cli-helper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLI helper
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#save-the-spatialdata-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Save the SpatialData object
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run-segmentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run segmentation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Run segmentation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-1-cellpose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 1: Cellpose
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-2-baysor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 2: Baysor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-3-custom-staining-based" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 3: Custom staining-based
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#aggregation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Aggregation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#annotation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Annotation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pipeline-report" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pipeline report
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#visualization-xenium-explorer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Visualization (Xenium Explorer)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-analyses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Further analyses
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+  <h1>Command line interface</h1>
+
+<p>When installing <code>sopa</code> as written in our <a href="../../getting_started">getting-started guidelines</a>, a new command named <code>sopa</code> becomes available.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The <a href="https://prism-oncology.github.io/sopa/tutorials/snakemake/">Snakemake pipeline</a> is recommended to get started with Sopa. Using the CLI is advised if you want more flexibility, but you'll need to parallelize the segmentation yourself, as detailed below.</p>
+</div>
+<h2 id="cli-helper">CLI helper</h2>
+<p>Run <code>sopa --help</code> to get details about all the command line purposes. You can also use this helper on any subcommand, for instance, <code>sopa convert --help</code>.</p>
+<div class="termy">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="go">// Run the Sopa CLI helper</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">$ </span>sopa<span class="w"> </span>--help
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="go"> Usage: sopa [OPTIONS] COMMAND [ARGS]...</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="go">╭─ Commands ─────────────────────────────────────────────────────╮</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="go">│ aggregate     Aggregate transcripts/channels inside cells      │</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="go">│ annotate      Perform cell-type annotation                     │</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="go">│ crop          Crop an image based on a user-defined polygon    │</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="go">│ explorer      Conversion to the Xenium Explorer's inputs       │</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="go">│ patchify      Create patches with overlaps                     │</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="go">│ read          Read any technology + write a SpatialData object │</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="go">│ report        Create a web-report with figures/QCs             │</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="go">│ resolve       Resolve the segmentation conflicts over patches  │</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="go">│ segmentation  Perform cell segmentation on patches             │</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="go">╰────────────────────────────────────────────────────────────────╯</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="go">// Example: run cellpose segmentation</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="gp">$ </span>sopa<span class="w"> </span>segmentation<span class="w"> </span>cellpose<span class="w"> </span>sdata.zarr
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="go">... [Logs] ...</span>
+</code></pre></div>
+</div>
+
+<h2 id="save-the-spatialdata-object">Save the <code>SpatialData</code> object</h2>
+<p>For this tutorial, we use a generated dataset. You can expect a total runtime of a few minutes.</p>
+<p>The command below will generate and save it on disk (you can change the path <code>tuto.zarr</code> to save it somewhere else). If you want to load your own data: choose the right panel below. For more information, refer to this <a href="../../faq/#what-are-the-inputs-of-sopa">FAQ</a> describing which data input you need, or run <code>sopa convert --help</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:7"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><input id="__tabbed_1_4" name="__tabbed_1" type="radio" /><input id="__tabbed_1_5" name="__tabbed_1" type="radio" /><input id="__tabbed_1_6" name="__tabbed_1" type="radio" /><input id="__tabbed_1_7" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Tutorial</label><label for="__tabbed_1_2">Xenium</label><label for="__tabbed_1_3">MERSCOPE</label><label for="__tabbed_1_4">CosMx</label><label for="__tabbed_1_5">PhenoCycler</label><label for="__tabbed_1_6">MACSima</label><label for="__tabbed_1_7">Other</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># it will generate a 'tuto.zarr' directory</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>sopa<span class="w"> </span>convert<span class="w"> </span>.<span class="w"> </span>--sdata-path<span class="w"> </span>tuto.zarr<span class="w"> </span>--technology<span class="w"> </span>toy_dataset
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># it will generate a '/path/to/sample/directory.zarr' directory</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>sopa<span class="w"> </span>convert<span class="w"> </span>/path/to/sample/directory<span class="w"> </span>--technology<span class="w"> </span>xenium
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># it will generate a '/path/to/sample/directory.zarr' directory</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>sopa<span class="w"> </span>convert<span class="w"> </span>/path/to/sample/directory<span class="w"> </span>--technology<span class="w"> </span>merscope
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># it will generate a '/path/to/sample/directory.zarr' directory</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>sopa<span class="w"> </span>convert<span class="w"> </span>/path/to/sample/directory<span class="w"> </span>--technology<span class="w"> </span>cosmx
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># it will generate a '/path/to/sample.zarr' directory</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>sopa<span class="w"> </span>convert<span class="w"> </span>/path/to/sample.qptiff<span class="w"> </span>--technology<span class="w"> </span>phenocycler
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># it will generate a '/path/to/sample/directory.zarr' directory</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>sopa<span class="w"> </span>convert<span class="w"> </span>/path/to/sample/directory<span class="w"> </span>--technology<span class="w"> </span>macsima
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<p>There are also several other readers, such as <code>hyperion</code>, or <code>molecular_cartography</code>. You can also try generic readers, like <code>ome_tif</code>, or even <code>bioio</code> which supports many inputs formats. Note that, to use <code>bioio</code>, you'll need to <code>pip install bioio</code> and potentially other format-specific dependencies as described in their <a href="https://bioio-devs.github.io/bioio/OVERVIEW.html#reader-installation">documentation</a>.</p>
+<p>Replace <code>&lt;TECHNOLOGY&gt;</code> by the right name on the following command line:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># it will generate a '/path/to/sample/directory.zarr' directory</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>sopa<span class="w"> </span>convert<span class="w"> </span>/path/to/sample/directory<span class="w"> </span>--technology<span class="w"> </span>&lt;TECHNOLOGY&gt;
+</code></pre></div></p>
+</div>
+</div>
+</div>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>It has created a <code>.zarr</code> directory which stores a <a href="https://github.com/scverse/spatialdata"><code>SpatialData</code> object</a> corresponding to your data sample. You can choose the location of the <code>.zarr</code> directory using the <code>--sdata-path</code> command line argument.</p>
+</div>
+<h2 id="run-segmentation">Run segmentation</h2>
+<h3 id="option-1-cellpose">Option 1: Cellpose</h3>
+<p>First, generate the bounding boxes of the patches on which Cellpose will be run. Here, the patches have a width and height of 1500 pixels and an overlap of 50 pixels. We advise bigger sizes for real datasets (see our default parameters in one of our <a href="https://github.com/prism-oncology/sopa/tree/main/workflow/config">config files</a>). On the toy dataset, this will generate <strong>4</strong> patches.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>sopa<span class="w"> </span>patchify<span class="w"> </span>image<span class="w"> </span>tuto.zarr<span class="w"> </span>--patch-width-pixel<span class="w"> </span><span class="m">1500</span><span class="w"> </span>--patch-overlap-pixel<span class="w"> </span><span class="m">50</span>
+</code></pre></div>
+<p>Now, we can run Cellpose on each individual patch. You can either run it directly on all patches (first option below), or on each patch individually (second option - ideal if you want to parallelize it yourself).</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Run all patches at once</label><label for="__tabbed_2_2">Run on each patch</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>The easiest way to run Cellpose is to use the command below, which directly run Cellpose on all patches and resolve the segmentation. You can add an additional channel, for instance, you can use <code>--channels DAPI --channels PolyT</code>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>sopa<span class="w"> </span>segmentation<span class="w"> </span>cellpose<span class="w"> </span>tuto.zarr<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">    </span>--channels<span class="w"> </span>DAPI<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span>--diameter<span class="w"> </span><span class="m">35</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">    </span>--min-area<span class="w"> </span><span class="m">2000</span>
+</code></pre></div>
+<p>By default, this will run cellpose sequentially. To make it run it parallel, you can export the following env variable: <code>export SOPA_PARALLELIZATION_BACKEND=dask</code>.</p>
+</div>
+<div class="tabbed-block">
+<p>Execute the following command line on all <code>patch-index</code> (i.e., <code>0</code>, <code>1</code>, <code>2</code>, and <code>3</code>) to run Cellpose using DAPI only (you can add an additional channel, for instance, <code>--channels DAPI --channels PolyT</code>):</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Manually running the commands below can involve using many consecutive commands, so we recommend automatizing it. For instance, this can be done using Snakemake or Nextflow. This will help you parallelize it since you can run each task on separate jobs or using multithreading. You can also see how we do it in our <a href="https://github.com/prism-oncology/sopa/blob/main/workflow/Snakefile">Snakefile</a>. If you prefer using the already existing pipeline instead of the CLI, you can read our <a href="https://prism-oncology.github.io/sopa/tutorials/snakemake/">Snakemake pipeline tutorial</a>.</p>
+<p>To automatically get the number of patches, you can either open the <code>tuto.zarr/.sopa_cache/patches_file_image</code> file, or compute <code>len(sdata['image_patches'])</code> in Python.</p>
+</div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>sopa<span class="w"> </span>segmentation<span class="w"> </span>cellpose<span class="w"> </span>tuto.zarr<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">    </span>--channels<span class="w"> </span>DAPI<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">    </span>--diameter<span class="w"> </span><span class="m">35</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">    </span>--min-area<span class="w"> </span><span class="m">2000</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">    </span>--patch-index<span class="w"> </span><span class="m">0</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>sopa<span class="w"> </span>segmentation<span class="w"> </span>cellpose<span class="w"> </span>tuto.zarr<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="w">    </span>--channels<span class="w"> </span>DAPI<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="w">    </span>--diameter<span class="w"> </span><span class="m">35</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="w">    </span>--min-area<span class="w"> </span><span class="m">2000</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="w">    </span>--patch-index<span class="w"> </span><span class="m">1</span>
+<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>
+<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>sopa<span class="w"> </span>segmentation<span class="w"> </span>cellpose<span class="w"> </span>tuto.zarr<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a><span class="w">    </span>--channels<span class="w"> </span>DAPI<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="w">    </span>--diameter<span class="w"> </span><span class="m">35</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a><span class="w">    </span>--min-area<span class="w"> </span><span class="m">2000</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a><span class="w">    </span>--patch-index<span class="w"> </span><span class="m">2</span>
+<a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a>
+<a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a>sopa<span class="w"> </span>segmentation<span class="w"> </span>cellpose<span class="w"> </span>tuto.zarr<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a><span class="w">    </span>--channels<span class="w"> </span>DAPI<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a><span class="w">    </span>--diameter<span class="w"> </span><span class="m">35</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a><span class="w">    </span>--min-area<span class="w"> </span><span class="m">2000</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a><span class="w">    </span>--patch-index<span class="w"> </span><span class="m">3</span>
+</code></pre></div>
+<p>At this stage, you executed 4 times Cellpose (once per patch). Now, we need to resolve the conflict, i.e. where boundaries are overlapping due to segmentation on multiple patches:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>sopa<span class="w"> </span>resolve<span class="w"> </span>cellpose<span class="w"> </span>tuto.zarr
+</code></pre></div></p>
+</div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In the above commands, the <code>--diameter</code> and <code>--min-area</code> parameters are specific to the data type we work on. For your own data, consider using the default parameters from one of our <a href="https://github.com/prism-oncology/sopa/tree/main/workflow/config">config files</a>. Here, <code>min-area</code> is in pixels^2.</p>
+</div>
+<h3 id="option-2-baysor">Option 2: Baysor</h3>
+<p>Baysor needs a config to be executed. You can find official config examples <a href="https://github.com/kharchenkolab/Baysor/tree/main/configs">here</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can also reuse the Baysor parameter we have defined for each machine, as in our <a href="https://github.com/prism-oncology/sopa/tree/main/workflow/config">Snakemake config files</a>. Note that, our Snakemake config is a <code>.yaml</code> file, but the Baysor config should still be a <code>.toml</code> file.</p>
+</div>
+<p>For this tutorial, we will use the config below. Save this in a <code>config.toml</code> file.
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">[data]</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="n">force_2d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="n">min_molecules_per_cell</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"x"</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"y"</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"z"</span>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="n">gene</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"genes"</span>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="n">min_molecules_per_gene</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="n">min_molecules_per_segment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span>
+<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="n">confidence_nn_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span>
+<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>
+<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="k">[segmentation]</span>
+<a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a><span class="n">scale</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="w">         </span><span class="c1"># typical cell radius in microns (IMPORTANT)</span>
+<a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a><span class="n">scale_std</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"25%"</span><span class="w"> </span><span class="c1"># cell radius standard deviation</span>
+<a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a><span class="n">prior_segmentation_confidence</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a><span class="n">estimate_scale_from_centers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
+<a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a><span class="n">n_clusters</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span>
+<a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a><span class="n">iters</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">500</span>
+<a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a><span class="n">n_cells_init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a><span class="n">nuclei_genes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span>
+<a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a><span class="n">cyto_genes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span>
+</code></pre></div></p>
+<p>Then, we generate the bounding boxes of the patches on which Baysor will be run. Here, the patches have a width and height of 200 microns. We advise bigger sizes for real datasets (see our default parameters in one of our <a href="https://github.com/prism-oncology/sopa/tree/main/workflow/config">config files</a>). On the toy dataset, this will generate <strong>4</strong> patches.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>sopa<span class="w"> </span>patchify<span class="w"> </span>transcripts<span class="w"> </span>tuto.zarr<span class="w"> </span>--patch-width-microns<span class="w"> </span><span class="m">200</span><span class="w"> </span>--prior-shapes-key<span class="w"> </span>cellpose_boundaries
+</code></pre></div>
+<p>As for cellpose, you can either run Baysor directly on all patches, or on each patch individually. You can provide the config argument as an inline dictionnary, or as a path to a <code>.toml</code> file, as below.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Run all patches at once</label><label for="__tabbed_3_2">Run on each patch</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>The easiest way to run Baysor is to use the command below, which directly run Baysor on all patches and resolve the segmentation.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>sopa<span class="w"> </span>segmentation<span class="w"> </span>baysor<span class="w"> </span>tuto.zarr<span class="w"> </span>--config<span class="w"> </span><span class="s1">'"config.toml"'</span>
+</code></pre></div>
+<p>By default, this will run baysor sequentially. To make it run it parallel, you can export the following env variable: <code>export SOPA_PARALLELIZATION_BACKEND=dask</code>.</p>
+</div>
+<div class="tabbed-block">
+<p>Now, we can run Baysor on each individual patch. Execute the following command lines to run Baysor on each patch (i.e., <code>0</code>, <code>1</code>, <code>2</code>, and <code>3</code>).</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Manually running the commands below can involve using many consecutive commands, so we recommend automatizing it. For instance, this can be done using Snakemake or Nextflow. This will help you parallelize it since you can run each task on separate jobs or using multithreading. You can also see how we do it in the <a href="https://github.com/prism-oncology/sopa/blob/main/workflow/Snakefile">Sopa Snakemake pipeline</a>.</p>
+<p>To automatically get the number of patches, you can open the <code>tuto.zarr/.sopa_cache/patches_file_transcripts</code> file. This lists the names of the directories inside <code>tuto.zarr/.sopa_cache/baysor</code> related to each patch. If you selected an ROI, the excluded patches are effectively not in the <code>patches_file_transcripts</code> file.</p>
+</div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>sopa<span class="w"> </span>segmentation<span class="w"> </span>baysor<span class="w"> </span>tuto.zarr<span class="w"> </span>--config<span class="w"> </span><span class="s1">'"config.toml"'</span><span class="w"> </span>--patch-index<span class="w"> </span><span class="m">0</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>sopa<span class="w"> </span>segmentation<span class="w"> </span>baysor<span class="w"> </span>tuto.zarr<span class="w"> </span>--config<span class="w"> </span><span class="s1">'"config.toml"'</span><span class="w"> </span>--patch-index<span class="w"> </span><span class="m">1</span>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>sopa<span class="w"> </span>segmentation<span class="w"> </span>baysor<span class="w"> </span>tuto.zarr<span class="w"> </span>--config<span class="w"> </span><span class="s1">'"config.toml"'</span><span class="w"> </span>--patch-index<span class="w"> </span><span class="m">2</span>
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>sopa<span class="w"> </span>segmentation<span class="w"> </span>baysor<span class="w"> </span>tuto.zarr<span class="w"> </span>--config<span class="w"> </span><span class="s1">'"config.toml"'</span><span class="w"> </span>--patch-index<span class="w"> </span><span class="m">3</span>
+</code></pre></div>
+<p>At this stage, you executed 4 times Baysor (once per patch). Now, we need to resolve the conflict, i.e. where boundaries are overlapping due to segmentation on multiple patches:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>sopa<span class="w"> </span>resolve<span class="w"> </span>baysor<span class="w"> </span>tuto.zarr<span class="w"> </span>--gene-column<span class="w"> </span>genes
+</code></pre></div></p>
+</div>
+</div>
+</div>
+<h3 id="option-3-custom-staining-based">Option 3: Custom staining-based</h3>
+<p>As for Cellpose, we generate the bounding boxes of the patches on which staining-based segmentation will be run.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>sopa<span class="w"> </span>patchify<span class="w"> </span>image<span class="w"> </span>tuto.zarr<span class="w"> </span>--patch-width-pixel<span class="w"> </span><span class="m">1500</span><span class="w"> </span>--patch-overlap-pixel<span class="w"> </span><span class="m">50</span>
+</code></pre></div>
+<p>With the <code>sopa segmentation generic-staining</code> command, you can use a custom segmentation method, with the signature described <a href="../custom_segmentation/">here</a> (or any function named <code>*_patch</code> from <a href="https://github.com/prism-oncology/sopa/blob/main/sopa/segmentation/methods/__init__.py">this file</a>).</p>
+<p>For instance, we can use <code>stardist_patch</code> directly from the CLI as below.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>sopa<span class="w"> </span>segmentation<span class="w"> </span>generic-staining<span class="w"> </span>tuto.zarr<span class="w"> </span>--method-name<span class="w"> </span>stardist_patch
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The toy dataset is not H&amp;E based, so stardist will fail on this example because of the number of channels. To create the right number of channels on the toy dataset, you can use the following command:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>sopa<span class="w"> </span>convert<span class="w"> </span>.<span class="w"> </span>--sdata-path<span class="w"> </span>tuto.zarr<span class="w"> </span>--technology<span class="w"> </span>toy_dataset<span class="w"> </span>--kwargs<span class="w"> </span><span class="s1">'{"c_coords": ["r", "g", "b"]}'</span>
+</code></pre></div></p>
+</div>
+<h2 id="aggregation">Aggregation</h2>
+<p>This <strong>mandatory</strong> step turns the data into an <code>AnnData</code> object. We can count the transcript inside each cell, and/or average each channel intensity inside each cell boundary.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:3"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><input id="__tabbed_4_3" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Count transcripts + average intensities</label><label for="__tabbed_4_2">Count transcripts</label><label for="__tabbed_4_3">Average intensities</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>sopa<span class="w"> </span>aggregate<span class="w"> </span>tuto.zarr<span class="w"> </span>--aggregate-genes<span class="w"> </span>--aggregate-channels<span class="w"> </span>--min-transcripts<span class="w"> </span><span class="m">10</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>sopa<span class="w"> </span>aggregate<span class="w"> </span>tuto.zarr<span class="w"> </span>--aggregate-genes<span class="w"> </span>--min-transcripts<span class="w"> </span><span class="m">10</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>sopa<span class="w"> </span>aggregate<span class="w"> </span>tuto.zarr<span class="w"> </span>--aggregate-channels
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="annotation">Annotation</h2>
+<p>If desired, cell-type annotation can be run. Currently, we support Tangram for transcript-based annotation and a simple scoring approach for channel-based annotation (called channel z-score).</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Channel Z-score annotation</label><label for="__tabbed_5_2">Tangram annotation</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>For now, our fluorescence-based annotation is very simple. We provide a dictionary where a channel is associated with a population. Then, each cell is associated with the cell type whose corresponding channel is the brightest (according to a certain Z-score). In this tutorial example, we can annotate Tumoral cells, T cells, and B cells:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>sopa<span class="w"> </span>annotate<span class="w"> </span>fluorescence<span class="w"> </span>tuto.zarr<span class="w"> </span>--marker-cell-dict<span class="w"> </span><span class="s1">'{"CK": "Tumoral cell", "CD3": "T cell", "CD20": "B cell"}'</span>
+</code></pre></div></p>
+<div class="admonition note">
+<p class="admonition-title">More complex annotation</p>
+<p>If you have a large number of channels, it may be preferable to run clustering on your data, for instance, using <a href="https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.leiden.html">Leiden clustering</a>. Then, you can annotate each cluster manually by plotting a heatmap of all channels expressions per cluster.</p>
+</div>
+</div>
+<div class="tabbed-block">
+<p><a href="https://github.com/broadinstitute/Tangram">Tangram</a> is a transcript-based annotation that uses an annotated single-cell reference. Let's suppose your reference <code>AnnData</code> object is stored in a file called <code>adata_reference.h5ad</code> (preferably, keep raw counts), and the cell type is in <code>adata.obs["cell_type"]</code>. Then, you can annotate your spatial data as follows:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>sopa<span class="w"> </span>annotate<span class="w"> </span>tangram<span class="w"> </span>tuto.zarr<span class="w"> </span>--sc-reference-path<span class="w"> </span>adata_reference.h5ad<span class="w"> </span>--cell-type-key<span class="w"> </span>cell_type
+</code></pre></div></p>
+</div>
+</div>
+</div>
+<h2 id="pipeline-report">Pipeline report</h2>
+<p>You can optionally create an HTML report of the pipeline run (in the example below, we save it under <code>report.html</code>). It contains some quality controls for your data.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>sopa<span class="w"> </span>report<span class="w"> </span>tuto.zarr<span class="w"> </span>report.html
+</code></pre></div>
+<h2 id="visualization-xenium-explorer">Visualization (Xenium Explorer)</h2>
+<p>The Xenium Explorer is a software developed by 10X Genomics for visualizing spatial data, and it can be downloaded freely <a href="https://www.10xgenomics.com/support/software/xenium-explorer/latest">here</a>. Sopa allows the conversion to the Xenium Explorer. It will create some files under a new <code>tuto.explorer</code> directory:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>sopa<span class="w"> </span>explorer<span class="w"> </span>write<span class="w"> </span>tuto.zarr
+</code></pre></div>
+<p>If you have downloaded the Xenium Explorer, you can now open the results in the explorer: <code>open tuto.explorer/experiment.xenium</code> (if using a Unix operating system), or double-click on the latter file.</p>
+<div class="admonition license">
+<p class="admonition-title">License</p>
+<p><em>Xenium Explorer</em> is a registered trademark of 10x Genomics. The Xenium Explorer is licensed for usage on Xenium data (more details <a href="https://www.10xgenomics.com/legal/end-user-software-license-agreement">here</a>).</p>
+</div>
+<div class="admonition info">
+<p class="admonition-title">Time efficiency</p>
+<p>Creating the image needed by the Xenium Explorer can be time-consuming. Therefore, we recommend performing one run for the image generation (below) and another to save the transcripts/boundaries/observations.
+<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="c1"># this can be done directly after saving the raw data in a .zarr directory</span>
+<a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>sopa<span class="w"> </span>explorer<span class="w"> </span>write<span class="w"> </span>tuto.zarr<span class="w"> </span>--mode<span class="w"> </span><span class="s2">"+i"</span><span class="w"> </span>--no-save-h5ad
+</code></pre></div></p>
+<p>After running everything with Sopa, you can finally save all the other Xenium Explorer input (e.g. boundaries and cell categories):
+<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="c1"># this should be done after aggregation and an eventual annotation</span>
+<a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>sopa<span class="w"> </span>explorer<span class="w"> </span>write<span class="w"> </span>tuto.zarr<span class="w"> </span>--mode<span class="w"> </span><span class="s2">"-i"</span>
+</code></pre></div>
+For more details and customization, run the command line helper with <code>sopa explorer write --help</code>.</p>
+</div>
+<h2 id="further-analyses">Further analyses</h2>
+<ul>
+<li>If you are familiar with the <a href="https://github.com/scverse/spatialdata"><code>spatialdata</code> library</a>, you can directly use the <code>tuto.zarr</code> directory, corresponding to a <code>SpatialData</code> object:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">spatialdata</span>
+<a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>
+<a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a><span class="n">sdata</span> <span class="o">=</span> <span class="n">spatialdata</span><span class="o">.</span><span class="n">read_zarr</span><span class="p">(</span><span class="s2">"tuto.zarr"</span><span class="p">)</span>
+</code></pre></div></li>
+<li>You can use <a href="https://squidpy.readthedocs.io/en/latest/index.html">Squidpy</a> which operates on both the <code>SpatialData</code> object or the <code>AnnData</code> object, or use other tools of the <code>scverse</code> ecosystem such as <a href="https://scanpy.readthedocs.io/en/stable/index.html"><code>Scanpy</code></a>.</li>
+<li>You can also use the file <code>tuto.explorer/adata.h5ad</code> if you prefer the <code>AnnData</code> object instead of the full <code>SpatialData</code> object.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2023 - 2024 Quentin Blampey
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.annotate", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../js/termynal.js"></script>
+      
+        <script src="../../js/custom.js"></script>
+      
+    
+  </body>
+</html>
