@@ -65,11 +65,10 @@ def stardist(
         model_dir_path.mkdir(parents=True, exist_ok=True)
         os.environ["KERAS_HOME"] = str(model_dir_path)
 
-    from sopa.segmentation.methods._stardist import SuppressPrintsAndWarnings, load_stardist_model
+    from sopa.segmentation.methods._stardist import load_stardist_model
 
     log = logging.getLogger(__name__)
 
-    with SuppressPrintsAndWarnings():
-        load_stardist_model(model_type=model_type)
+    load_stardist_model(model_type=model_type)
 
     log.info(f"StarDist model '{model_type}' is cached and ready to be used.")

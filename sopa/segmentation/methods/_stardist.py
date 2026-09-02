@@ -131,14 +131,15 @@ def load_stardist_model(model_type: str | None = "2D_versatile_he", local_model:
     except ImportError:
         raise ImportError("To use stardist, you need its corresponding sopa extra: `pip install 'sopa[stardist]'`.")
 
-    if local_model is None:
-        return StarDist2D.from_pretrained(model_type)
+    with SuppressPrintsAndWarnings():
+        if local_model is None:
+            return StarDist2D.from_pretrained(model_type)
 
-    model_path = Path(local_model).absolute()
-    if not model_path.is_dir():
-        raise FileNotFoundError(f"StarDist model directory not found: {model_path}")
+        model_path = Path(local_model).absolute()
+        if not model_path.is_dir():
+            raise FileNotFoundError(f"StarDist model directory not found: {model_path}")
 
-    return StarDist2D(None, name=model_path.name, basedir=str(model_path.parent))
+        return StarDist2D(None, name=model_path.name, basedir=str(model_path.parent))
 
 
 class SuppressPrintsAndWarnings:
