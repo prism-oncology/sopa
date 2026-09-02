@@ -117,22 +117,7 @@ def cellpose_patch(
     Returns:
         A `callable` whose input is an image of shape `(C, Y, X)` and output is a cell mask of shape `(Y, X)`. Each mask value `>0` represent a unique cell ID
     """
-    try:
-        from cellpose import models, version
-    except ImportError:
-        raise ImportError("To use cellpose, you need its corresponding sopa extra: `pip install 'sopa[cellpose]'`.")
-
-    is_v4 = Version(version) >= Version("4.0.0")
-
-    if is_v4:
-        if not pretrained_model:
-            log.info(f"You use cellpose={version}, which requires a `pretrained_model`. Defaulting to 'cpsam'.")
-            pretrained_model = "cpsam"
-
-        if not gpu:
-            log.warning(
-                f"You use cellpose={version}, which can be slow without a GPU. Consider using `gpu=True`, or downgrading to `cellpose<4.0.0`."
-            )
+    is_v4, pretrained_model = _cellpose_version_check(pretrained_model, gpu)
 
     def _(
         patch: np.ndarray,
@@ -145,12 +130,11 @@ def cellpose_patch(
     ):
         warnings.filterwarnings("ignore", message="You are using `torch.load` with `weights_only=False`")
 
-        cellpose_model_kwargs = cellpose_model_kwargs or {}
-
-        if pretrained_model:
-            model = models.CellposeModel(gpu=gpu, pretrained_model=pretrained_model, **cellpose_model_kwargs)
-        else:
-            model = models.Cellpose(gpu=gpu, model_type=model_type, **cellpose_model_kwargs)
+        model = load_cellpose_model(
+            model_type=model_type,
+            pretrained_model=pretrained_model,
+            cellpose_model_kwargs=cellpose_model_kwargs,
+        )
 
         if isinstance(channels, str) or len(channels) == 1:
             channels = [0, 0]  # gray scale
@@ -173,3 +157,48 @@ def cellpose_patch(
         cellpose_model_kwargs=cellpose_model_kwargs,
         **cellpose_eval_kwargs,
     )
+
+
+def _cellpose_version_check(pretrained_model: str | None, gpu: bool | None = None) -> tuple[bool, str | None]:
+    try:
+        from cellpose import version
+    except ImportError:
+        raise ImportError("To use cellpose, you need its corresponding sopa extra: `pip install 'sopa[cellpose]'`.")
+
+    is_v4 = Version(version) >= Version("4.0.0")
+
+    if is_v4:
+        if not pretrained_model:
+            log.info(f"You use cellpose={version}, which requires a `pretrained_model`. Defaulting to 'cpsam'.")
+            pretrained_model = "cpsam"
+
+        if gpu is False:
+            log.warning(
+                f"You use cellpose={version}, which can be slow without a GPU. Consider using `gpu=True`, or downgrading to `cellpose<4.0.0`."
+            )
+
+    return is_v4, pretrained_model
+
+
+def load_cellpose_model(
+    model_type: str = "cyto3",
+    pretrained_model: str | None = None,
+    cellpose_model_kwargs: dict | None = None,
+):
+    """Instantiate a Cellpose model. If the model is not already on disk,it is downloaded.
+
+    Args:
+        model_type: Cellpose model type, only if using `cellpose<4.0.0`.
+        pretrained_model: Name of the pretrained model (e.g., `"cpsam"` if using `cellpose>=4.0.0`), or path to the pretrained model to be loaded, or `None`.
+        cellpose_model_kwargs: Dictionary of kwargs to be provided to the `cellpose.models.CellposeModel` object.
+
+    Returns:
+        A `cellpose.models.CellposeModel` object.
+    """
+    from cellpose import models
+
+    cellpose_model_kwargs = cellpose_model_kwargs or {}
+
+    if pretrained_model:
+        return models.CellposeModel(pretrained_model=pretrained_model, **cellpose_model_kwargs)
+    return models.Cellpose(model_type=model_type, **cellpose_model_kwargs)

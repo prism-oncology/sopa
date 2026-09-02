@@ -4,6 +4,7 @@ import logging
 import typer
 
 from .annotate import app_annotate
+from .download import app_download
 from .explorer import app_explorer
 from .patchify import app_patchify
 from .resolve import app_resolve
@@ -29,6 +30,11 @@ app.add_typer(
     help="Perform cell segmentation on patches. NB: for `baysor`, use directly the `baysor` command line.",
 )
 app.add_typer(app_resolve, name="resolve", help="Resolve the segmentation conflicts over patches overlaps")
+app.add_typer(
+    app_download,
+    name="download",
+    help="Download the model weights used by the segmentation methods, so that they are cached before running the segmentation",
+)
 app.add_typer(
     app_patchify,
     name="patchify",
