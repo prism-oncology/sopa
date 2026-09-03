@@ -72,3 +72,30 @@ def stardist(
     load_stardist_model(model_type=model_type)
 
     log.info(f"StarDist model '{model_type}' is cached and ready to be used.")
+
+
+@app_download.command()
+def instanseg(
+    model_type: str = typer.Option("fluorescence_nuclei_and_cells", help="Name of the pretrained InstanSeg model."),
+    model_dir: str = typer.Option(
+        None,
+        help="Directory where the model is stored. By default, uses the InstanSeg default directory (`$INSTANSEG_BIOIMAGEIO_PATH`)",
+    ),
+):
+    """Download the InstanSeg model, so that it is cached before running the segmentation."""
+    import logging
+    import os
+    from pathlib import Path
+
+    if model_dir:
+        model_dir_path = Path(model_dir).resolve()
+        model_dir_path.mkdir(parents=True, exist_ok=True)
+        os.environ["INSTANSEG_BIOIMAGEIO_PATH"] = str(model_dir_path)
+
+    from sopa.segmentation.methods._instanseg import load_instanseg_model
+
+    log = logging.getLogger(__name__)
+
+    load_instanseg_model(model_type=model_type, device="cpu")
+
+    log.info(f"InstanSeg model '{model_type}' is cached and ready to be used.")
