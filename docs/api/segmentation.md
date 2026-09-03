@@ -6,6 +6,8 @@
 
 ::: sopa.segmentation.stardist
 
+::: sopa.segmentation.instanseg
+
 ::: sopa.segmentation.baysor
 
 ::: sopa.segmentation.comseg
