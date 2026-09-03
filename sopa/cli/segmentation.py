@@ -144,6 +144,71 @@ def stardist(
 
 
 @app_segmentation.command()
+def instanseg(
+    sdata_path: str = typer.Argument(help=SDATA_HELPER),
+    model_type: str = typer.Option(
+        "fluorescence_nuclei_and_cells", help="Name of the pretrained InstanSeg model, or path to a local model."
+    ),
+    pixel_size: float = typer.Option(
+        None,
+        help="Resolution of the image, in microns per pixel. If not provided, the image is not rescaled, and no cell may be segmented at all if they are not at the scale expected by the model.",
+    ),
+    target: str = typer.Option(
+        "cells",
+        help="Whether to output 'cells' or 'nuclei' boundaries (for models supporting both).",
+    ),
+    device: str = typer.Option(None, help="Device used for inference (e.g., 'cuda', 'mps', or 'cpu')."),
+    channels: list[str] = typer.Option(None, help="Names of the channels used for segmentation."),
+    min_area: int = typer.Option(0, help="Minimum area (in pixels^2) for a cell to be considered as valid"),
+    clip_limit: float = typer.Option(
+        0,
+        help="Parameter for skimage.exposure.equalize_adapthist (applied before running the segmentation method)",
+    ),
+    clahe_kernel_size: int = typer.Option(
+        None,
+        help="Parameter for skimage.exposure.equalize_adapthist (applied before running instanseg)",
+    ),
+    gaussian_sigma: float = typer.Option(
+        0,
+        help="Parameter for scipy gaussian_filter (applied before running the segmentation method)",
+    ),
+    patch_index: int = typer.Option(
+        default=None,
+        help="Index of the patch on which the segmentation method should be run. NB: the number of patches is `len(sdata['image_patches'])`",
+    ),
+    cache_dir_name: str = typer.Option(
+        default=None,
+        help="Name of the temporary the segmentation method directory inside which we will store each individual patch segmentation. By default, uses the `instanseg_boundaries` directory",
+    ),
+    method_kwargs: str = typer.Option(
+        {},
+        callback=ast.literal_eval,
+        help="Kwargs for the method. This should be a dictionnary, in inline string format.",
+    ),
+):
+    """Perform InstanSeg segmentation. This can be done on all patches directly, or on one individual patch."""
+    from sopa.constants import SopaKeys
+
+    _run_staining_segmentation(
+        sdata_path,
+        "instanseg_patch",
+        SopaKeys.INSTANSEG_BOUNDARIES,
+        channels,
+        min_area,
+        clip_limit,
+        clahe_kernel_size,
+        gaussian_sigma,
+        patch_index,
+        cache_dir_name,
+        model_type=model_type,
+        pixel_size=pixel_size,
+        target=target,
+        device=device,
+        **method_kwargs,
+    )
+
+
+@app_segmentation.command()
 def generic_staining(
     sdata_path: str = typer.Argument(help=SDATA_HELPER),
     method_name: str = typer.Option(
