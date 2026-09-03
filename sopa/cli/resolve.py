@@ -48,6 +48,27 @@ def stardist(
 
 
 @app_resolve.command()
+def instanseg(
+    sdata_path: str = typer.Argument(help=SDATA_HELPER),
+    cache_dir_name: list[str] = typer.Option(
+        [],
+        help="Name of the directories containing the instanseg segmentation on patches (or multiple directories if using multi-step segmentation). By default, uses the `instanseg_boundaries` directory",
+    ),
+):
+    """Resolve patches conflicts after instanseg segmentation"""
+    from sopa.constants import SopaKeys
+
+    from .utils import _default_boundary_dir
+
+    if not len(cache_dir_name):
+        cache_dir_name = [SopaKeys.INSTANSEG_BOUNDARIES]
+
+    patch_dir = [_default_boundary_dir(sdata_path, name) for name in cache_dir_name]
+
+    _resolve_generic(sdata_path, patch_dir, SopaKeys.INSTANSEG_BOUNDARIES)
+
+
+@app_resolve.command()
 def generic(
     sdata_path: str = typer.Argument(help=SDATA_HELPER),
     method_name: str = typer.Option(

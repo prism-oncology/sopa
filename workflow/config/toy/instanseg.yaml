@@ -1,0 +1,33 @@
+# For parameters details, see this commented example: https://github.com/prism-oncology/sopa/blob/main/workflow/config/example_commented.yaml
+read:
+  technology: toy_dataset
+
+patchify:
+  patch_width_pixel: 1200
+  patch_overlap_pixel: 50
+
+segmentation:
+  instanseg:
+    model_type: fluorescence_nuclei_and_cells
+    channels: ["DAPI"]
+    target: cells
+    # The model is trained at 0.5 microns/pixel. The toy nuclei are ~38px wide,
+    # so they must be declared at ~0.25 microns/pixel to be rescaled into the
+    # size range the model expects - without this, nothing is segmented.
+    pixel_size: 0.25
+    min_area: 2500
+
+aggregate:
+  aggregate_channels: true
+
+annotation:
+  method: fluorescence
+  args:
+    marker_cell_dict:
+      CK: Tumoral cell
+      CD3: T cell
+      CD20: B cell
+
+explorer:
+  ram_threshold_gb: 4
+  pixel_size: 1

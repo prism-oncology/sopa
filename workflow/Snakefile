@@ -11,6 +11,7 @@ include: "rules/comseg.smk"
 include: "rules/baysor.smk"
 include: "rules/proseg.smk"
 include: "rules/stardist.smk"
+include: "rules/instanseg.smk"
 
 localrules: all
 
