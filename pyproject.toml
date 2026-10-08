@@ -23,6 +23,7 @@ dependencies = [
   "igraph>=0.11.0",
   "typer>=0.9.0",
   "dask[distributed]>=2024.4.1",
+  "shapely<2.2",
 ]
 
 [project.optional-dependencies]
