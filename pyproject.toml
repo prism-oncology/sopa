@@ -74,9 +74,9 @@ addopts = "-m 'not wsi'"
 docs = "mkdocs serve"
 pre-commit = "pre-commit run --all-files"
 test = "pytest -m 'not wsi' --cov --cov-config=pyproject.toml --cov-report=html --disable-warnings"
-test_short = "pytest -m 'not long and not wsi' --cov --cov-config=pyproject.toml --cov-report=html --disable-warnings"
+test_short = "pytest -m 'not cellpose_v4 and not wsi' --cov --cov-config=pyproject.toml --cov-report=html --disable-warnings"
 test_wsi = "pytest -m wsi"
-test_long = "pytest -m 'long and not wsi'"
+test_cellpose_v4 = "pytest -m 'cellpose_v4 and not wsi'"
 
 [tool.ruff]
 target-version = "py39"
