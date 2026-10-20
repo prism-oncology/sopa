@@ -23,7 +23,7 @@ from ...utils import (
     set_boundaries_attrs,
     to_intrinsic,
 )
-from .utils import _check_transcript_patches, _get_executable_path
+from .utils import _check_transcript_patches, _get_executable_command
 
 log = logging.getLogger(__name__)
 
@@ -217,7 +217,7 @@ def _get_proseg_points_command(
     command_line_suffix: str,
     infer_presets: bool,
 ) -> str:
-    proseg_executable = _get_executable_path("proseg", ".cargo")
+    proseg_executable = _get_executable_command("proseg", ".cargo", bioconda_package_name="rust-proseg")
 
     feature_key = get_feature_key(sdata[points_key], raise_error=True)
 
@@ -230,7 +230,7 @@ def _get_proseg_points_command(
 
 
 def _get_proseg_bins_command(sdata: SpatialData, command_line_suffix: str, infer_presets: bool) -> str:
-    proseg_executable = _get_executable_path("proseg", ".cargo")
+    proseg_executable = _get_executable_command("proseg", ".cargo", bioconda_package_name="rust-proseg")
 
     if infer_presets and "--voxel-size" not in command_line_suffix:
         command_line_suffix += " --voxel-size 2"
