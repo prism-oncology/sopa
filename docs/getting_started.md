@@ -36,7 +36,7 @@ Choose one of the following, depending on your needs:
     # no extra
     pip install  -e .
 
-    # or, to install extras, among cellpose/baysor/stardist/wsi:
+    # or, to install extras, among cellpose/baysor/stardist/instanseg/wsi:
     pip install -e '.[cellpose,baysor]'
     ```
 
@@ -62,7 +62,7 @@ By default, `sopa` only install the minimal dependencies to avoid a heavy instal
     ```sh
     pip install 'sopa[cellpose]'
 
-    # you can also combine extras: pip install 'sopa[cellpose,baysor,wsi,stardist]'
+    # you can also combine extras: pip install 'sopa[cellpose,baysor,wsi,stardist,instanseg]'
     ```
 
 === "Proseg"
