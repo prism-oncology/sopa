@@ -176,7 +176,7 @@ import sopa
 sdata = sopa.io.toy_dataset()
 sopa.make_image_patches(sdata)
 
-sopa.segmentation.cellpose(sdata, channels="DAPI", diameter=30, cellpose_model_kwargs={"gpu": True})
+sopa.segmentation.cellpose(sdata, channels="DAPI", diameter=30, gpu=True)
 ```
 
 ## How to provide other arguments to Cellpose?

@@ -36,7 +36,7 @@ Choose one of the following, depending on your needs:
     # no extra
     pip install  -e .
 
-    # or, to install extras, among cellpose/baysor/stardist/wsi:
+    # or, to install extras, among cellpose/baysor/stardist/instanseg/wsi:
     pip install -e '.[cellpose,baysor]'
     ```
 
@@ -62,18 +62,21 @@ By default, `sopa` only install the minimal dependencies to avoid a heavy instal
     ```sh
     pip install 'sopa[cellpose]'
 
-    # you can also combine extras: pip install 'sopa[cellpose,baysor,wsi,stardist]'
+    # you can also combine extras: pip install 'sopa[cellpose,baysor,wsi,stardist,instanseg]'
     ```
 
 === "Proseg"
-    [Proseg](https://github.com/dcjones/proseg) has to be installed independently, this can be done with [`cargo`](https://doc.rust-lang.org/cargo/getting-started/installation.html):
+    [Proseg](https://github.com/dcjones/proseg) has to be installed independently. This can be done with `conda`:
+
+    ```sh
+    conda install bioconda::rust-proseg
+    ```
+
+    Or [`cargo`](https://doc.rust-lang.org/cargo/getting-started/installation.html):
 
     ```sh
     cargo install proseg
     ```
-
-    !!! info "Executable path"
-        If the `proseg` executable is not at `~/.cargo/bin/proseg`, please make the `proseg` command available (e.g., via creating a symlink `~/.local/bin/proseg` pointing to the executable), or export the path to the executable via `export proseg=/path/to/proseg/executable`.
 
 === "Baysor"
     To use [Baysor](https://kharchenkolab.github.io/Baysor/dev/), you'll first need to install Sopa with the `baysor` extra:
@@ -82,10 +85,11 @@ By default, `sopa` only install the minimal dependencies to avoid a heavy instal
     pip install 'sopa[baysor]'
     ```
 
-    **Important**: then, you also have to install the `baysor` command line as detailed in the [official documentation](https://kharchenkolab.github.io/Baysor/dev/installation/).
+    Then, also install the `baysor` executable: this can be done via `conda` (recommended, see below) or as detailed in the [official Baysor documentation](https://kharchenkolab.github.io/Baysor/dev/installation/).
 
-    !!! info "Executable path"
-        If the Baysor executable is not at `~/.julia/bin/baysor`, please make the `baysor` command available (e.g., via creating a symlink `~/.local/bin/baysor` pointing to the executable), or export the path to the executable via `export baysor=/path/to/baysor/executable`.
+    ```sh
+    conda install bioconda::baysor-cpp
+    ```
 
 
 === "Stardist"

@@ -95,7 +95,7 @@ jobs:
         run: uv sync --extra cellpose --dev
 
       - name: Tests
-        run: uv run poe test_long
+        run: uv run poe test_cellpose_v4
 
   test_pip_install:
     needs: [pre-commit]

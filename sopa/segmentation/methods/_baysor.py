@@ -12,7 +12,7 @@ from ...utils import (
     get_transcripts_patches_dirs,
     set_boundaries_attrs,
 )
-from .utils import _check_transcript_patches, _get_executable_path, resolve
+from .utils import _check_transcript_patches, _get_executable_command, resolve
 
 log = logging.getLogger(__name__)
 
@@ -137,24 +137,24 @@ class BaysorPatch:
 
 
 def _get_baysor_command(prior_shapes_key: str | None) -> str:
-    baysor_executable_path = _get_executable_path("baysor", ".julia")
+    baysor_executable = _get_executable_command("baysor", ".julia", bioconda_package_name="baysor-cpp")
 
-    use_polygons_format_argument = _use_polygons_format_argument(baysor_executable_path)
+    use_polygons_format_argument = _use_polygons_format_argument(baysor_executable)
     polygon_format = (
         "--polygon-format GeometryCollection" if use_polygons_format_argument else "--save-polygons GeoJSON"
     )  # depends on the version of baysor
 
     prior_suffix = f" :{prior_shapes_key}" if prior_shapes_key else ""  # use a prior segmentation
 
-    return f"{baysor_executable_path} run {polygon_format} -c config.toml transcripts.csv -o ." + prior_suffix
+    return f"{baysor_executable} run {polygon_format} -c config.toml transcripts.csv -o ." + prior_suffix
 
 
-def _use_polygons_format_argument(baysor_executable_path: str) -> bool:
+def _use_polygons_format_argument(baysor_executable: str) -> bool:
     import subprocess
 
     from packaging.version import InvalidVersion, Version
 
-    result = subprocess.run(f"{baysor_executable_path} run --version", shell=True, capture_output=True, text=True)
+    result = subprocess.run(f"{baysor_executable} run --version", shell=True, capture_output=True, text=True)
 
     try:
         return Version(result.stdout) >= Version("0.7.0")
@@ -211,10 +211,7 @@ def _copy_segmentation_config(path: Path | str, config: dict | str):
     try:
         import toml
     except ImportError:
-        raise ImportError(
-            "To use baysor, you need its corresponding sopa extra: `pip install 'sopa[baysor]'`.\
-            \nAlso, make sure to install the baysor executable (https://github.com/kharchenkolab/Baysor)."
-        )
+        raise ImportError("To use baysor, you need its corresponding sopa extra: `pip install 'sopa[baysor]'`")
 
     with open(path, "w") as f:
         toml.dump(config, f)

@@ -23,7 +23,7 @@ def test_channels_average_within_mask():
     assert (_channels_average_within_mask(image, mask) == expected).all()
 
 
-@pytest.mark.long
+@pytest.mark.cellpose_v4
 def test_cellpose_segmentation():
     sdata = sopa.io.toy_dataset(length=200)
 
