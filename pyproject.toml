@@ -69,6 +69,7 @@ build-backend = "hatchling.build"
 testpaths = ["tests"]
 python_files = "test_*.py"
 addopts = "-m 'not wsi'"
+markers = ["cellpose_v4: tests requiring cellpose>=4", "wsi: tests requiring the wsi extra"]
 
 [tool.poe.tasks]
 docs = "mkdocs serve"
