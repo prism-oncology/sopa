@@ -1,0 +1,1811 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../api_usage/">
+      
+      
+        <link rel="next" href="../techno_specific/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/sopa_favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Snakemake pipeline - Sopa</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../css/termynal.css">
+    
+      <link rel="stylesheet" href="../../css/custom.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#snakemake-pipeline" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Sopa" class="md-header__button md-logo" aria-label="Sopa" data-md-component="logo">
+      
+  <img src="../../assets/sopa_small_white.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Sopa
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Snakemake pipeline
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/prism-oncology/sopa" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    prism-oncology/sopa
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Sopa" class="md-nav__button md-logo" aria-label="Sopa" data-md-component="logo">
+      
+  <img src="../../assets/sopa_small_white.png" alt="logo">
+
+    </a>
+    Sopa
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/prism-oncology/sopa" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    prism-oncology/sopa
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting_started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API usage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Snakemake pipeline
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Snakemake pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Setup
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#choose-a-config-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choose a config file
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run-the-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run the pipeline
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Run the pipeline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#locate-your-raw-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Locate your raw data
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#activate-snakemake" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Activate snakemake
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#run-snakemake" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run Snakemake
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#visium-hd-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Visium HD usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#toy-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Toy example
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pipeline-outputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pipeline outputs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Pipeline outputs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#spatialdata-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SpatialData directory
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#explorer-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Explorer directory
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advanced usage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-your-own-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create your own config
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#passing-kwargs-to-the-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Passing kwargs to the config
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-your-own-profile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create your own profile
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../techno_specific/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tech-specific advice
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../xenium_explorer/explorer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Xenium Explorer usage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../align/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Landmark-based alignment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../compare_segmentations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Comparing segmentations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spatial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spatial operations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../visium_hd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visium HD tutorial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../he/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    H&amp;E usage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli_usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Command line interface
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_11" id="__nav_3_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Other segmentations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Other segmentations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../comseg/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ComSeg usage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../multi_step_segmentation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multi-step
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../custom_segmentation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom segmentation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/readers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Readers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/patches/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Patches
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/segmentation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Segmentation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/aggregation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Aggregation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/spatial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spatial operations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Utils
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/misc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Misc
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Frequently asked questions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cite_us/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cite us
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Setup
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#choose-a-config-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choose a config file
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run-the-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run the pipeline
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Run the pipeline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#locate-your-raw-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Locate your raw data
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#activate-snakemake" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Activate snakemake
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#run-snakemake" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run Snakemake
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#visium-hd-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Visium HD usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#toy-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Toy example
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pipeline-outputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pipeline outputs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Pipeline outputs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#spatialdata-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SpatialData directory
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#explorer-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Explorer directory
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advanced usage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-your-own-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create your own config
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#passing-kwargs-to-the-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Passing kwargs to the config
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-your-own-profile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create your own profile
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="snakemake-pipeline">Snakemake pipeline</h1>
+<p>Sopa comes with an existing <a href="https://snakemake.readthedocs.io/en/stable/">Snakemake</a> workflow to get started quickly. This will not involve any coding but requires some setup specific to <code>snakemake</code>.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>If you're more familiar with Nextflow, you can try <a href="https://nf-co.re/sopa/">nf-core/sopa</a> instead.</p>
+</div>
+<h2 id="setup">Setup</h2>
+<h3 id="installation">Installation</h3>
+<p>Follow our <a href="../../getting_started">installation instructions</a> until the end of the "Snakemake setup" section.</p>
+<p>At the end, you should have one <code>sopa</code> environment, one one environment with <code>snakemake&gt;=8.0.0</code> (it can be the same environment, if desired), and you should also have cloned the <code>sopa</code> repository.</p>
+<h3 id="choose-a-config-file">Choose a config file</h3>
+<p>Our pipeline config is a YAML file that describes all the steps desired for the pipeline. It is flexible; for instance, if you remove the <code>baysor</code> section from the config, then it will not run baysor.</p>
+<p>You can choose a config among the existing ones <a href="https://github.com/prism-oncology/sopa/tree/main/workflow/config">here</a> or <a href="./#create-your-own-config">create your own</a>.</p>
+<p>Keep in mind the path of your config (relative to the <code>workflow</code> directory) because you'll need it later. For instance, <code>config/merscope/base.yaml</code> is a valid relative path. You can also use an absolute path if you prefer.</p>
+<h2 id="run-the-pipeline">Run the pipeline</h2>
+<h3 id="locate-your-raw-data">Locate your raw data</h3>
+<p>First, you need to locate the path to one sample's raw experiment file(s). This is usually a directory containing one or many image(s) and, eventually, a transcript file. If you don't know what data you need, see our <a href="../../faq/#what-are-the-inputs-of-sopa">FAQ</a>.</p>
+<p>Again, remind this path, as we will use it later.</p>
+<h3 id="activate-snakemake">Activate snakemake</h3>
+<p>Then, activate an environment that has the snakemake command:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>conda<span class="w"> </span>activate<span class="w"> </span>snakemake<span class="w">    </span><span class="c1"># or any environment that has `snakemake`</span>
+</code></pre></div></p>
+<p>And move in the <code>workflow</code> directory of the <code>sopa</code> repository:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">cd</span><span class="w"> </span>workflow<span class="w">   </span><span class="c1"># move to the workflow directory inside the sopa repository</span>
+</code></pre></div></p>
+<h3 id="run-snakemake">Run Snakemake</h3>
+<p>You can either execute the pipeline locally or on a high-performance-cluster (choose the right option below).</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><input id="__tabbed_1_4" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Local execution (e.g., personal laptop)</label><label for="__tabbed_1_2">Slurm cluster</label><label for="__tabbed_1_3">LSF cluster</label><label for="__tabbed_1_4">Other high-performance-cluster</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>You can execute the pipeline locally as below (in this example, we use only one core). Make sure to replace <code>data_path</code> with the path to your raw data directory, and <code>configfile</code> with the relative path to your config (as detailed above).</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>snakemake<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span>--config<span class="w"> </span><span class="nv">data_path</span><span class="o">=</span>/path/to/directory<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span>--configfile<span class="o">=</span>config/merscope/base.yaml<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span>--workflow-profile<span class="w"> </span>profile/local<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span>--cores<span class="w"> </span><span class="m">1</span>
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Faster pipeline</p>
+<p>Even though Sopa can be run locally, we recommend to use it on high-performance-clusters to benefit from all the pipeline capabilities (see the second tab just above).</p>
+</div>
+</div>
+<div class="tabbed-block">
+<p>To fully benefit from Slurm, you'll need a <a href="https://snakemake.readthedocs.io/en/stable/executing/cli.html#profiles">Snakemake cluster profile</a>. Sopa offers a <a href="https://github.com/prism-oncology/sopa/blob/main/workflow/profile/slurm/config.yaml">default Slurm profile</a> for you. Make sure you have <code>snakemake&gt;=8.0.0</code>, and also install the <a href="https://snakemake.github.io/snakemake-plugin-catalog/plugins/executor/slurm.html">Slurm plugin</a> with <code>pip install snakemake-executor-plugin-slurm</code>.</p>
+<p>Then, you can use the Slurm profile as shown below. Make sure to replace <code>data_path</code> with the path to your raw data directory, and <code>configfile</code> with the relative path to your config (as detailed above).</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>snakemake<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span>--config<span class="w"> </span><span class="nv">data_path</span><span class="o">=</span>/path/to/directory<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span>--configfile<span class="o">=</span>config/merscope/base.yaml<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span>--workflow-profile<span class="w"> </span>profile/slurm<span class="w">  </span><span class="c1"># or any profile you want</span>
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Specify the slurm partition names</p>
+<p>You may need to update the <code>slurm_partition</code> parameters inside the <code>workflow/profile/slurm/config.yaml</code> file according to the partition names of your cluster (else, it will always use the same partition). You can also change <code>mem_mb</code>, depending on the RAM capabilities of your cluster.</p>
+</div>
+</div>
+<div class="tabbed-block">
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The LSF profile is experimental. Don't hesitate to open an issue or a PR.</p>
+</div>
+<p>To fully benefit from LSF, you'll need a <a href="https://snakemake.readthedocs.io/en/stable/executing/cli.html#profiles">Snakemake cluster profile</a>. Sopa offers a <a href="https://github.com/prism-oncology/sopa/blob/main/workflow/profile/lsf/config.yaml">default LSF profile</a> for you, but <strong>it is still experimental</strong>. Make sure you have <code>snakemake&gt;=8.0.0</code>, and also install the <a href="https://snakemake.github.io/snakemake-plugin-catalog/plugins/executor/lsf.html">LSF plugin</a> with <code>pip install snakemake-executor-plugin-lsf</code>.</p>
+<p>Then, you can use the LSF profile as shown below. Make sure to replace <code>data_path</code> with the path to your raw data directory, and <code>configfile</code> with the relative path to your config (as detailed above).</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>snakemake<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span>--config<span class="w"> </span><span class="nv">data_path</span><span class="o">=</span>/path/to/directory<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span>--configfile<span class="o">=</span>config/merscope/base.yaml<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span>--workflow-profile<span class="w"> </span>profile/lsf<span class="w">  </span><span class="c1"># or any profile you want</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<p>If you have high-performance-cluster that is not a Slurm/LSF HPC, then we recommend reading more about the <a href="https://snakemake.readthedocs.io/en/stable/executing/cli.html#profiles">Snakemake profiles</a>, and, especially, the different <a href="https://snakemake.github.io/snakemake-plugin-catalog/index.html">executor plugins</a>.</p>
+<p>Once you installed an executor plugin, you can use it with the command below. Make sure to replace <code>data_path</code> with the path to your raw data directory, and <code>configfile</code> with the relative path to your config (as detailed above).</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>snakemake<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span>--config<span class="w"> </span><span class="nv">data_path</span><span class="o">=</span>/path/to/directory<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span>--configfile<span class="o">=</span>config/merscope/base.yaml
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span>--executor<span class="w"> </span>my_executor<span class="w">  </span><span class="c1"># your new executor</span>
+</code></pre></div>
+<p>Or you can also create a new profile for your HPC: for instance, you can create <code>workflow/profile/my_profile/config.yaml</code>, which you can use it witht the following command:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>snakemake<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">    </span>--config<span class="w"> </span><span class="nv">data_path</span><span class="o">=</span>/path/to/directory<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span>--configfile<span class="o">=</span>config/merscope/base.yaml
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">    </span>--workflow-profile<span class="w"> </span>profile/my_profile<span class="w">  </span><span class="c1"># your new profile</span>
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">RAM per rule</p>
+<p>Some Snakemake rules may use more RAM, for instance <code>explorer</code>, or <code>to_spatialdata</code>. Consider adjusting the RAM and the walltime depending on the Snakemake rules.</p>
+</div>
+</div>
+</div>
+</div>
+<p>For more customization, see the <a href="https://snakemake.readthedocs.io/en/stable/executing/cli.html">snakemake CLI documentation</a>.</p>
+<h3 id="visium-hd-usage">Visium HD usage</h3>
+<p>For Visium HD, the full-resolution microscopy image (not the cytassist image) is required by Sopa as we’ll run cell segmentation on the H&amp;E full-resolution slide. Therefore, you'll need to also pass <code>fullres_image_file=/path/to_fullres_image</code> to the config in the command line:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>snakemake<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">    </span>--config<span class="w"> </span><span class="nv">data_path</span><span class="o">=</span>/path/to/directory<span class="w"> </span><span class="nv">fullres_image_file</span><span class="o">=</span>/path/to_fullres_image<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span>--configfile<span class="o">=</span>config/visium_hd/stardist.yaml<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span>--workflow-profile<span class="w"> </span>profile/slurm<span class="w">  </span><span class="c1"># or any profile you want</span>
+</code></pre></div>
+<p>Note that, here, <code>data_path</code> should be the output directory of Space Ranger. If you want to run Space Ranger within the pipeline (and not separately), refer to the <a href="https://nf-co.re/sopa"><code>nf-core</code> version of Sopa</a>.</p>
+<h2 id="toy-example">Toy example</h2>
+<p>In the example below, we run the pipeline on a generated toy dataset. Running it locally can help test a new pipeline or config.</p>
+<p>Make sure you have installed everything as detailed in this tutorial, and then run the following command lines:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:3"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><input id="__tabbed_2_3" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Cellpose usage</label><label for="__tabbed_2_2">Proseg usage</label><label for="__tabbed_2_3">Baysor usage</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>Make sure you have installed sopa with the <code>cellpose</code> extra (for instance, this can be done via the following command: <code>pip install 'sopa[cellpose]'</code>).
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>conda<span class="w"> </span>activate<span class="w"> </span>snakemake<span class="w">    </span><span class="c1"># or any environment that has `snakemake`</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="nb">cd</span><span class="w"> </span>workflow<span class="w">   </span><span class="c1"># move to the workflow directory inside the sopa repository</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1"># you can replace tuto.zarr by another path where the data will be saved</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>snakemake<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">    </span>--config<span class="w"> </span><span class="nv">sdata_path</span><span class="o">=</span>tuto.zarr<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">    </span>--configfile<span class="o">=</span>config/toy/cellpose.yaml<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">    </span>--workflow-profile<span class="w"> </span>profile/local<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="w">    </span>--cores<span class="w"> </span><span class="m">1</span>
+</code></pre></div></p>
+</div>
+<div class="tabbed-block">
+<p>Make sure you have installed the <code>proseg</code> command (refer to our getting started).
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>conda<span class="w"> </span>activate<span class="w"> </span>snakemake<span class="w">    </span><span class="c1"># or any environment that has `snakemake`</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="nb">cd</span><span class="w"> </span>workflow<span class="w">   </span><span class="c1"># move to the workflow directory inside the sopa repository</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1"># you can replace tuto.zarr by another path where the data will be saved</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>snakemake<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">    </span>--config<span class="w"> </span><span class="nv">sdata_path</span><span class="o">=</span>tuto.zarr<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">    </span>--configfile<span class="o">=</span>config/toy/proseg.yaml<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">    </span>--workflow-profile<span class="w"> </span>profile/local<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="w">    </span>--cores<span class="w"> </span><span class="m">1</span>
+</code></pre></div></p>
+</div>
+<div class="tabbed-block">
+<p>Make sure you have installed sopa with the <code>baysor</code> extra, and that you have installed the <code>baysor</code> command (refer to our getting started).
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>conda<span class="w"> </span>activate<span class="w"> </span>snakemake<span class="w">    </span><span class="c1"># or any environment that has `snakemake`</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="nb">cd</span><span class="w"> </span>workflow<span class="w">   </span><span class="c1"># move to the workflow directory inside the sopa repository</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="c1"># you can replace tuto.zarr by another path where the data will be saved</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>snakemake<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">    </span>--config<span class="w"> </span><span class="nv">sdata_path</span><span class="o">=</span>tuto.zarr<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="w">    </span>--configfile<span class="o">=</span>config/toy/baysor.yaml<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="w">    </span>--workflow-profile<span class="w"> </span>profile/local<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="w">    </span>--cores<span class="w"> </span><span class="m">1</span>
+</code></pre></div></p>
+</div>
+</div>
+</div>
+<div class="admonition notes">
+<p class="admonition-title">Notes</p>
+<p>On the above example, it executes snakemake sequentially (one core), which is enough for debugging purposes. You can remove the argument, or set a higher number of cores.</p>
+</div>
+<p>You can then check <code>tuto.explorer</code> for output files. Notably, if you have installed the <a href="https://www.10xgenomics.com/support/software/xenium-explorer">Xenium Explorer</a>, double-click on <code>experiment.xenium</code> to visualize the results.</p>
+<h2 id="pipeline-outputs">Pipeline outputs</h2>
+<p>The pipeline outputs consists in two directories located next to your raw data directory. They have the same name as your raw directory, but with extension <code>.zarr</code> and <code>.explorer</code> respectively (see below for more details).</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>You can also change the path to the <code>.zarr</code> output, by providing <code>sdata_path=/your/path.zarr</code> just after <code>--config</code> on the snakemake execution line. This will also move the <code>.explorer</code> directory, that will be saved at <code>/your/path.explorer</code></p>
+</div>
+<h4 id="spatialdata-directory"><code>SpatialData</code> directory</h4>
+<p>If you are familiar with the <a href="https://github.com/scverse/spatialdata"><code>spatialdata</code> library</a>, you can use the <code>.zarr</code> directory, corresponding to a <code>SpatialData</code> object:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">spatialdata</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="n">sdata</span> <span class="o">=</span> <span class="n">spatialdata</span><span class="o">.</span><span class="n">read_zarr</span><span class="p">(</span><span class="s2">"/path/to/data.zarr"</span><span class="p">)</span>
+</code></pre></div></p>
+<h4 id="explorer-directory">Explorer directory</h4>
+<p>The <code>.explorer</code> directory contains the following files:</p>
+<ul>
+<li>
+<p><code>report.html</code> a short quality control of you data, as an HTML report</p>
+</li>
+<li>
+<p><code>adata.h5ad</code> the AnnData object with spatial locations of the cells (see <code>adata.obsm['spatial']</code>), and also cell-by-gene table and/or the cell-by-channel table.</p>
+</li>
+<li>
+<p><code>experiment.xenium</code> the Xenium Explorer file: double-click on it to open it on the Xenium Explorer (<a href="https://www.10xgenomics.com/support/software/xenium-explorer/downloads">download the software here</a>)</p>
+</li>
+<li>
+<p>The other files are data files related and required by the Xenium Explorer</p>
+</li>
+</ul>
+<h2 id="advanced-usage">Advanced usage</h2>
+<h3 id="create-your-own-config">Create your own config</h3>
+<p>If the existing <code>config</code> files are not suited for your project, you can update an existing one or create a whole new one. For this, use <a href="https://github.com/prism-oncology/sopa/blob/main/workflow/config/example_commented.yaml">this commented config</a> to understand the purpose of each argument. Note that some sections are optional: in this case, remove the section or the argument, and Sopa will not run it.</p>
+<p>When running snakemake, you will then need to provide the relative or absolute path to your <code>.yaml</code> config, for instance <code>--configfile=/path/to/your/config.yaml</code>.</p>
+<h3 id="passing-kwargs-to-the-config">Passing kwargs to the config</h3>
+<p>Internally, the Snakemake pipeline is calling <a href="../cli_usage">Sopa's CLI</a>. <strong>Not all argument are used</strong> in the default config files. You can pass additionnal kwargs to the config so that they are given to the CLI.</p>
+<p>For instance, if you want to pass kwargs to the <a href="../../api/readers/#sopa.io.merscope">MERSCOPE reader</a>, you can update the config as below:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>read:
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>  technology: merscope
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>  kwargs:
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>    z_layers: 2
+</code></pre></div></p>
+<h3 id="create-your-own-profile">Create your own profile</h3>
+<p>As mentioned above, you can use a <a href="https://snakemake.readthedocs.io/en/stable/executing/cli.html#profiles">Snakemake profile</a> to execute the pipeline. In Snakemake&gt;=8.0.0, there are multiple <a href="https://snakemake.github.io/snakemake-plugin-catalog/index.html">executor plugins</a> that can help you.</p>
+<p>Save your new profile under <code>workflow/profile/my_profile/config.yaml</code>.</p>
+<p>Then, to use the new profile, pass <code>--workflow-profile profile/my_profile</code> to your <code>snakemake</code> command.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2023 - 2024 Quentin Blampey
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.annotate", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../js/termynal.js"></script>
+      
+        <script src="../../js/custom.js"></script>
+      
+    
+  </body>
+</html>
