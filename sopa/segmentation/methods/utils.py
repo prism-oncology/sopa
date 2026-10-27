@@ -202,7 +202,7 @@ def _check_transcript_patches(sdata: SpatialData, with_prior: bool = False):
         )
 
 
-def _get_executable_path(name: str, default_dir: str) -> Path | str:
+def _get_executable_command(name: str, default_dir: str, bioconda_package_name: str) -> Path | str:
     if shutil.which(name) is not None:
         return name
 
@@ -212,5 +212,6 @@ def _get_executable_path(name: str, default_dir: str) -> Path | str:
 
     bin_path = Path.home() / ".local" / "bin" / name
     raise FileNotFoundError(
-        f"Please install {name} and ensure that either `{default_path}` executes {name}, or that `{name}` is an existing command (add it to your PATH, or create a symlink at {bin_path})."
+        f"Please install the {name} executable, e.g. via `conda install bioconda::{bioconda_package_name}`. "
+        f"Ensure that either `{default_path}` executes {name}, or that `{name}` is an existing command (add it to your PATH, or create a symlink at {bin_path})."
     )
