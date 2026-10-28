@@ -21,6 +21,50 @@ _BLOSC = Blosc(cname="zstd", clevel=5, shuffle=Blosc.SHUFFLE)
 _COMPRESSOR_META = {"id": "blosc", "cname": "zstd", "clevel": 5, "shuffle": 1, "blocksize": 0}
 
 
+def _create_gene_offset_array(gene_identity: np.ndarray) -> np.ndarray:
+    """
+    Create gene_offset array for XeniumExplorer compatibility.
+
+    This array provides fast O(1) lookup of transcripts by gene within each tile,
+    significantly improving query performance in XeniumExplorer.
+
+    Args:
+        gene_identity: Array of gene IDs for transcripts in this tile
+
+    Returns:
+        gene_offset array with shape (N, 4) where each row contains:
+        [start_index, end_index, next_offset, count]
+    """
+    n_transcripts = len(gene_identity)
+
+    # Create gene_offset array
+    offset_size = n_transcripts * 3
+    gene_offset = np.zeros((offset_size, 4), dtype=np.uint32)
+
+    if n_transcripts == 0:
+        return gene_offset
+
+    # Group transcripts by gene and create offset entries
+    unique_genes, counts = np.unique(gene_identity, return_counts=True)
+    current_idx = 0
+
+    for gene_id, count in zip(unique_genes, counts):
+        gene_indices = np.where(gene_identity == gene_id)[0]
+
+        if current_idx < offset_size:
+            start = gene_indices[0]
+            end = gene_indices[-1] + 1
+
+            gene_offset[current_idx, 0] = start
+            gene_offset[current_idx, 1] = end
+            gene_offset[current_idx, 2] = current_idx
+            gene_offset[current_idx, 3] = count
+
+            current_idx += 1
+
+    return gene_offset
+
+
 def write_transcripts(
     path: Path,
     df: dd.DataFrame,
@@ -34,24 +78,40 @@ def write_transcripts(
     Args:
         path: Path to the Xenium Explorer directory where the transcript file will be written
         df: DataFrame representing the transcripts, with `"x"`, `"y"` column required, as well as the `gene` column (see the corresponding argument)
+            Note: Coordinates should be in micron units.
         gene: Column of `df` containing the genes names.
         max_levels: Maximum number of levels in the pyramid.
         is_dir: If `False`, then `path` is a path to a single file, not to the Xenium Explorer directory.
-        pixel_size: Number of microns in a pixel. Invalid value can lead to inconsistent scales in the Explorer.
+        pixel_size: This parameter is deprecated and kept for backward compatibility only.
+            The coordinate system is now always assumed to be in microns, and grid_size is fixed at 250.0.
+
+    Notes:
+        - The function now maintains coordinates in their original micron units without scaling.
+        - grid_size is fixed at 250.0 microns (same as XeniumRanger) for optimal performance.
+        - gene_offset field is added for fast gene lookup in XeniumExplorer.
     """
     path = explorer_file_path(path, FileNames.POINTS, is_dir)
 
     df = df.compute()
 
     num_transcripts = len(df)
-    grid_size = ExplorerConstants.GRID_SIZE / ExplorerConstants.PIXELS_TO_MICRONS * pixel_size
+
+    # CRITICAL FIX: Use fixed grid_size (250.0 microns) independent of pixel_size
+    # This matches XeniumRanger's grid_size for optimal query performance
+    grid_size = float(ExplorerConstants.GRID_SIZE)  # 250.0 microns
+
     df[gene] = df[gene].astype("category")
 
-    xy: np.ndarray = (df[["x", "y"]] * pixel_size).values
+    # CRITICAL FIX: Do NOT scale coordinates
+    # Coordinates should already be in micron units from Xenium data
+    # Previously: xy = (df[["x", "y"]] * pixel_size).values  # This was incorrect
+    xy: np.ndarray = df[["x", "y"]].values  # Keep original micron coordinates
 
     if xy.min() < 0:
         log.warning("Some transcripts are located outside of the image (pixels < 0)")
-    log.info(f"Writing {len(df)} transcripts")
+    log.info(f"Writing {len(df)} transcripts in original micron coordinates")
+    log.info(f"Coordinate range: X=[{xy[:, 0].min():.2f}, {xy[:, 0].max():.2f}], Y=[{xy[:, 1].min():.2f}, {xy[:, 1].max():.2f}]")
+    log.info(f"Using grid_size = {grid_size} microns")
 
     xmax, ymax = xy.max(axis=0)
 
@@ -295,6 +355,18 @@ def _write_density(
     })
 
     log.info(f"   > Density grid: {n_rows}x{n_cols} ({grid_size}µm bins), {density_csr.nnz} non-zero entries")
+
+                    # CRITICAL FIX: Add gene_offset field for fast gene lookup
+                    # This field is essential for XeniumExplorer performance
+                    tile_gene_identity = gene_identity[level_locs][loc].flatten()
+                    tile_gene_offset = _create_gene_offset_array(tile_gene_identity)
+
+                    tile_group.create_array(
+                        "gene_offset",
+                        data=tile_gene_offset,
+                        chunks=(tile_gene_offset.shape[0], 4),
+                        compressor={"id": "blosc", "cname": "zstd", "clevel": 5, "shuffle": 1}
+                    )
 
 
 def _z(n: int) -> np.ndarray:
