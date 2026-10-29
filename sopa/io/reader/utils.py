@@ -78,9 +78,7 @@ def _general_tif_directory_reader(
     return SpatialData(images={image_name: image}, attrs={SopaAttrs.CELL_SEGMENTATION: image_name})
 
 
-def _clip_intensity_values(
-    image: xr.DataArray, clip_quantile: bool | None = None, quantile: float = 0.99
-) -> xr.DataArray:
+def _clip_intensity_values(image: xr.DataArray, clip_quantile: bool = False, quantile: float = 0.99) -> xr.DataArray:
     if clip_quantile is False or image.shape[1] * image.shape[2] > 2**28:
         denominator = image.max(dim=("y", "x"))
     else:
@@ -89,7 +87,7 @@ def _clip_intensity_values(
     return ((image / denominator.data.compute()[:, None, None]).clip(0, 1) * 255).astype(np.uint8)
 
 
-def _image_int_dtype(image: xr.DataArray, clip_quantile: bool | None = None, quantile: float = 0.99) -> xr.DataArray:
+def _image_int_dtype(image: xr.DataArray, clip_quantile: bool = False, quantile: float = 0.99) -> xr.DataArray:
     image = image.transpose("c", "y", "x")
 
     if np.issubdtype(image.dtype, np.integer):
