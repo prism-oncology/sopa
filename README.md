@@ -44,7 +44,7 @@ pip install sopa
 > [!NOTE]
 > See this [installation section](https://prism-oncology.github.io/sopa/getting_started/) for more details about extras and other installations modes.
 
-## Features
+## Usage modes
 Sopa comes in four different flavours, each corresponding to a different use case:
 - `API`: use directly `sopa` as a Python package for complete flexibility and customization (example below).
 - `nf-core/sopa`: run Sopa with Nextflow (see [this repo](https://github.com/nf-core/sopa) and the corresponding [usage guide](https://nf-co.re/sopa/usage)).
