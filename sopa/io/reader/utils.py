@@ -79,9 +79,9 @@ def _general_tif_directory_reader(
 
 
 def _to_uint8(image: xr.DataArray) -> xr.DataArray:
-    denominator = image.max(dim=("y", "x"))
+    channels_max = image.max(dim=("y", "x")).data.compute()[:, None, None]
 
-    return ((image / denominator.data.compute()[:, None, None]).clip(0, 1) * 255).astype(np.uint8)
+    return ((image / channels_max).clip(0, 1) * 255).astype(np.uint8)
 
 
 def _image_int_dtype(image: xr.DataArray) -> xr.DataArray:
