@@ -1,7 +1,4 @@
 # Misc
-workflow/.snakemake
-workflow/logs/*
-!workflow/logs/.gitkeep
 *ignore*
 archive/
 explore
