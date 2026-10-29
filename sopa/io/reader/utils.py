@@ -78,16 +78,13 @@ def _general_tif_directory_reader(
     return SpatialData(images={image_name: image}, attrs={SopaAttrs.CELL_SEGMENTATION: image_name})
 
 
-def _clip_intensity_values(image: xr.DataArray, clip_quantile: bool = False, quantile: float = 0.99) -> xr.DataArray:
-    if clip_quantile is False or image.shape[1] * image.shape[2] > 2**28:
-        denominator = image.max(dim=("y", "x"))
-    else:
-        denominator = image.chunk({"y": -1, "x": -1}).quantile(quantile, dim=("y", "x"))
+def _to_uint8(image: xr.DataArray) -> xr.DataArray:
+    denominator = image.max(dim=("y", "x"))
 
     return ((image / denominator.data.compute()[:, None, None]).clip(0, 1) * 255).astype(np.uint8)
 
 
-def _image_int_dtype(image: xr.DataArray, clip_quantile: bool = False, quantile: float = 0.99) -> xr.DataArray:
+def _image_int_dtype(image: xr.DataArray) -> xr.DataArray:
     image = image.transpose("c", "y", "x")
 
     if np.issubdtype(image.dtype, np.integer):
@@ -96,7 +93,7 @@ def _image_int_dtype(image: xr.DataArray, clip_quantile: bool = False, quantile:
     if not np.issubdtype(image.dtype, np.floating):
         raise ValueError(f"Invalid image type {image.dtype}")
 
-    return _clip_intensity_values(image, clip_quantile=clip_quantile, quantile=quantile)
+    return _to_uint8(image)
 
 
 def _ome_channels_names(path: Path | str):
