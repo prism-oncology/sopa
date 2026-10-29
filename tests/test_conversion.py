@@ -11,7 +11,7 @@ def test_to_uint8() -> None:
     image = Image2DModel.parse(x, dims=["y", "x", "c"])
     converted_image = _to_uint8(image)
 
-    assert converted_image.data.max().compute() == 255
+    assert (converted_image.max(dim=("y", "x")).data.compute() == 255).all()
 
     ratio = (converted_image.sel(c=0) / image.sel(c=0)).data.compute()
 
