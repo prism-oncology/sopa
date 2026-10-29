@@ -17,7 +17,6 @@ nav:
   - Getting started: getting_started.md
   - Tutorials:
       - API usage: tutorials/api_usage.ipynb
-      - Snakemake pipeline: tutorials/snakemake.md
       - Tech-specific advice: tutorials/techno_specific.md
       - Xenium Explorer usage: tutorials/xenium_explorer/explorer.ipynb
       - Landmark-based alignment: tutorials/align.md

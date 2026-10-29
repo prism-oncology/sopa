@@ -1,7 +1,7 @@
 When installing `sopa` as written in our [getting-started guidelines](../../getting_started), a new command named `sopa` becomes available.
 
 !!! warning
-    The [Snakemake pipeline](https://prism-oncology.github.io/sopa/tutorials/snakemake/) is recommended to get started with Sopa. Using the CLI is advised if you want more flexibility, but you'll need to parallelize the segmentation yourself, as detailed below.
+    The [API](https://prism-oncology.github.io/sopa/tutorials/api_usage/) or [nf-core/sopa pipeline](https://nf-co.re/sopa/dev/) is recommended to get started with Sopa. Using the CLI can be used if you want more flexibility, but you'll need to parallelize the segmentation yourself, as detailed below.
 
 ## CLI helper
 
@@ -106,7 +106,7 @@ Now, we can run Cellpose on each individual patch. You can either run it directl
     Execute the following command line on all `patch-index` (i.e., `0`, `1`, `2`, and `3`) to run Cellpose using DAPI only (you can add an additional channel, for instance, `--channels DAPI --channels PolyT`):
 
     !!! tip
-        Manually running the commands below can involve using many consecutive commands, so we recommend automatizing it. For instance, this can be done using Snakemake or Nextflow. This will help you parallelize it since you can run each task on separate jobs or using multithreading. You can also see how we do it in our [Snakefile](https://github.com/prism-oncology/sopa/blob/main/workflow/Snakefile). If you prefer using the already existing pipeline instead of the CLI, you can read our [Snakemake pipeline tutorial](https://prism-oncology.github.io/sopa/tutorials/snakemake/).
+        Manually running the commands below can involve using many consecutive commands, so we recommend automatizing it. For instance, this can be done using Snakemake or Nextflow. This will help you parallelize it since you can run each task on separate jobs or using multithreading.
 
         To automatically get the number of patches, you can either open the `tuto.zarr/.sopa_cache/patches_file_image` file, or compute `len(sdata['image_patches'])` in Python.
 
