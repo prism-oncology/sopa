@@ -9,7 +9,7 @@ from spatialdata.models import Image2DModel
 from xarray import DataArray
 
 from ...constants import SopaAttrs
-from .utils import _clip_intensity_values, _default_image_kwargs
+from .utils import _default_image_kwargs, _to_uint8
 
 log = logging.getLogger(__name__)
 
@@ -44,7 +44,7 @@ def hyperion(path: Path, image_models_kwargs: dict | None = None, imread_kwargs:
     image = DataArray(image, dims=["c", "y", "x"], name=image_name, coords={"c": names})
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        image = _clip_intensity_values(image)
+        image = _to_uint8(image)
 
     image = Image2DModel.parse(
         image,
