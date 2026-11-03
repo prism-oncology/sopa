@@ -74,7 +74,7 @@ def write_transcripts(
         "codeword_gene_mapping": codeword_gene_mapping,
         "codeword_gene_names": gene_names,
         "gene_names": gene_names,
-        "gene_index_map": dict(zip(gene_names, codeword_gene_mapping)),
+        "gene_index_map": dict(zip(gene_names, codeword_gene_mapping, strict=False)),
         "number_genes": num_genes,
         "spatial_units": "micron",
         "coordinate_space": "refined-final_global_micron",

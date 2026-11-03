@@ -3,7 +3,7 @@ name = "sopa"
 version = "2.2.12"
 description = "Spatial-omics pipeline and analysis"
 authors = [{ name = "Quentin Blampey", email = "quentin.blampey@gmail.com" }]
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 readme = "README.md"
 license = "BSD-3-Clause"
 classifiers = [
@@ -80,7 +80,7 @@ test_wsi = "pytest -m wsi"
 test_cellpose_v4 = "pytest -m 'cellpose_v4 and not wsi'"
 
 [tool.ruff]
-target-version = "py39"
+target-version = "py312"
 line-length = 120
 fix = true
 

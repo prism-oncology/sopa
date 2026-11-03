@@ -1,5 +1,5 @@
+from collections.abc import Callable
 from functools import partial
-from typing import Callable
 
 import numpy as np
 from spatialdata import SpatialData

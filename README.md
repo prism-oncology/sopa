@@ -36,7 +36,7 @@ The following illustration describes the main steps of `sopa`:
 
 ## Installation
 
-Sopa can be installed from `PyPI` on all OS, for any Python version `>=3.11`. On a new environment, run the following command:
+Sopa can be installed from `PyPI` on all OS, for any Python version `>=3.12`. On a new environment, run the following command:
 ```sh
 pip install sopa
 ```

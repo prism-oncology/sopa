@@ -149,7 +149,7 @@ def _read_all_segmented_patches(
         for path in tqdm(patches_dirs, desc="Reading transcript-segmentation outputs")
     ]
 
-    patches_cells, adatas = zip(*outs)
+    patches_cells, adatas = zip(*outs, strict=False)
 
     return patches_cells, adatas
 

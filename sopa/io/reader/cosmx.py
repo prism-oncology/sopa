@@ -415,7 +415,7 @@ class _CosMXReader:
         ]
         mm_to_pixels = 1e3 / COSMX_PIXEL_SIZE  # conversion factor from mm to pixels for CosMx
 
-        for (fov_key, x_key, y_key), scale_factor in zip(valid_keys, [1, mm_to_pixels, mm_to_pixels]):
+        for (fov_key, x_key, y_key), scale_factor in zip(valid_keys, [1, mm_to_pixels, mm_to_pixels], strict=False):
             if not np.isin([fov_key, x_key, y_key], fov_locs.columns).all():  # try different column names
                 continue
 

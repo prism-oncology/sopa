@@ -1,8 +1,7 @@
 import logging
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from functools import partial
 from pathlib import Path
-from typing import Callable
 
 import geopandas as gpd
 import numpy as np
