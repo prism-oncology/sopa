@@ -26,5 +26,5 @@ runs:
         cache-suffix: ${{ inputs.python-version }}
 
     - name: Install Python dependencies
-      run: uv sync --all-extras --dev --upgrade --no-extra stardist --frozen
+      run: uv sync --frozen
       shell: bash
