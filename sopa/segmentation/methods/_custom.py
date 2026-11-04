@@ -1,5 +1,5 @@
 import shutil
-from typing import Callable
+from collections.abc import Callable
 
 from spatialdata import SpatialData
 

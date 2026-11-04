@@ -1,6 +1,6 @@
 ## Installing Sopa
 
-Sopa can be installed from `PyPI` on all OS, for any Python version `>=3.11`.
+Sopa can be installed from `PyPI` on all OS, for any Python version `>=3.12`.
 
 !!! note "Advice (optional)"
 
@@ -9,7 +9,7 @@ Sopa can be installed from `PyPI` on all OS, for any Python version `>=3.11`.
     For instance, you can create a new `conda` environment:
 
     ```bash
-    conda create --name sopa python=3.12
+    conda create --name sopa python=3.13
     conda activate sopa
     ```
 

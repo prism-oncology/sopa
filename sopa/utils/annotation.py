@@ -61,6 +61,9 @@ def tangram_annotate(
 ):
     """Tangram multi-level annotation. Tangram is run on multiple bags of cells to decrease the RAM usage.
 
+    !!! warning
+        This function is deprecated, and will be removed in a future version. See this [PR](https://github.com/prism-oncology/sopa/pull/460) for more details.
+
     !!! info
         You need to install `tangram-sc` to use this function. You can install it via `pip install tangram-sc`.
 
@@ -77,6 +80,11 @@ def tangram_annotate(
         density_prior: Density prior used in Tangram. Can be `"uniform"` or `"rna_count_based"`.
         clip_percentile: Percentile used to clip the probabilities before taking the maximum (to obtain hard cell-type labels from probabilities).
     """
+    log.warning(
+        "The `tangram_annotate` function is deprecated and will be removed in a future version. See reasons here: https://github.com/prism-oncology/sopa/pull/460"
+    )
+    _warn_pandas_version()
+
     if isinstance(sdata, SpatialData):
         assert SopaKeys.TABLE in sdata.tables, f"No '{SopaKeys.TABLE}' table found in sdata.tables"
         ad_sp = sdata.tables[SopaKeys.TABLE]
@@ -329,3 +337,11 @@ class MultiLevelAnnotation:
             return False
 
         return True
+
+
+def _warn_pandas_version():
+    import pandas as pd
+    from packaging.version import Version
+
+    if Version(pd.__version__) >= Version("3.0.0"):
+        log.warning(f"Your pandas version is {pd.__version__}, which is not (yet) supported by Tangram.")

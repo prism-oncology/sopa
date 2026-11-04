@@ -1,7 +1,7 @@
 import logging
 import warnings
+from collections.abc import Callable
 from functools import partial
-from typing import Callable
 
 import numpy as np
 from packaging.version import Version

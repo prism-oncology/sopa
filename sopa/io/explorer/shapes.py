@@ -124,7 +124,7 @@ def _extract_coordinates(
 ) -> tuple[list[Polygon], np.ndarray]:
     polygons = geo_df.geometry.values
 
-    assert all(isinstance(geom, (Polygon, MultiPolygon)) for geom in polygons), (
+    assert all(isinstance(geom, Polygon | MultiPolygon) for geom in polygons), (
         "All geometries must be a `shapely.Polygon` or `shapely.MultiPolygon`"
     )
 

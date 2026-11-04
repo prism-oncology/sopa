@@ -1,9 +1,9 @@
 import os
 import sys
 import warnings
+from collections.abc import Callable
 from functools import partial
 from pathlib import Path
-from typing import Callable
 
 import numpy as np
 from spatialdata import SpatialData

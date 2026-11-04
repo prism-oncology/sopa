@@ -230,6 +230,6 @@ def _get_roi(geo_df: gpd.GeoDataFrame, use_roi_centroids: bool) -> Polygon | Mul
         if roi.area < _previous_area * 0.999:
             raise ValueError("ROI is a GeometryCollection that could not be simplified into polygons.")
 
-    assert isinstance(roi, (Polygon, MultiPolygon)), f"Invalid ROI type: {type(roi)}. Must be Polygon or MultiPolygon"
+    assert isinstance(roi, Polygon | MultiPolygon), f"Invalid ROI type: {type(roi)}. Must be Polygon or MultiPolygon"
 
     return roi
