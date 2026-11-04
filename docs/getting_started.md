@@ -117,30 +117,11 @@ By default, `sopa` only install the minimal dependencies to avoid a heavy instal
     pip install 'sopa[wsi]'
     ```
 
-## Snakemake setup
-
-If you plan to use Snakemake, in addition to the above `sopa` environment, you'll need to clone the `sopa` repository containing the Snakemake workflow:
-
-```sh
-git clone https://github.com/prism-oncology/sopa.git
-cd sopa   # move inside the sopa repository
-```
-
-Also, make sure you have installed `snakemake>=8.0.0`. This does **not** necessarily have to be inside the `sopa` environment — for instance, you can create a new environment specific to snakemake:
-
-```sh
-# this will create a new environment called "snakemake"
-conda create -c conda-forge -c bioconda -n snakemake snakemake
-conda activate snakemake
-```
-
-Now, follow our [snakemake tutorial](../tutorials/snakemake) to run your first pipeline.
-
 ## Usage
 
 Sopa comes in four different flavours, each corresponding to a different use case:
 
 - `API`: use directly `sopa` as a Python package for full flexibility and customization (see a tutorial [here](../tutorials/api_usage)).
-- `Snakemake pipeline`: choose a config, and run our pipeline on your spatial data in a few minutes. See our [snakemake tutorial](../tutorials/snakemake).
-- `nf-core/sopa`: run Sopa with Nextflow (see [this repo](https://github.com/nf-core/sopa) and the corresponding [usage guide](https://nf-co.re/sopa/usage)). Great for Docker users.
+- `nf-core/sopa`: run Sopa with Nextflow (see [this repo](https://github.com/nf-core/sopa) and the corresponding [usage guide](https://nf-co.re/sopa/usage)).
+- `Snakemake pipeline`: choose a config, and run our pipeline on your spatial data in a couple of minutes (deprecated in favor of `nf-core/sopa`, see the public archive [here](https://github.com/prism-oncology/snakemake-sopa)).
 - `CLI`: use our [command-line-interface](../tutorials/cli_usage) to prototype quickly your own pipeline (advanced users).

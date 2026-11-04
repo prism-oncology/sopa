@@ -3,7 +3,7 @@
 Sopa is designed to run on all spatial technologies at single-cell resolution, but some choices or parameters may be more or less suited to certain technologies.
 
 !!! note
-    All this advice is for the API usage, but it also applies to the CLI and the Snakemake pipeline (update the usage accordingly or look at our [per-technology Snakemake configs](https://github.com/prism-oncology/sopa/tree/main/workflow/config)).
+    All this advice is for the API usage, but it also applies to the CLI (update the usage accordingly).
 
 ## Xenium or MERSCOPE
 

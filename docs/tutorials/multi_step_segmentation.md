@@ -27,7 +27,7 @@ Then, you can continue as usual, i.e. with `sopa.aggregate` and so on.
 !!! warning
     Here, we only detail the multi-step segmentation. For the rest of the CLI usage, refer to our [CLI usage tutorial](../cli_usage), and only replace the "Run segmentation" section with the instructions below.
 
-First, generate the bounding boxes of the patches on which Cellpose will be run. Here, the patches have a width and height of 1500 pixels, and an overlap of 50 pixels. We advise bigger sizes for real datasets (see our default parameters in one of our [config files](https://github.com/prism-oncology/sopa/tree/main/workflow/config)). On the toy dataset, this will generate **4** patches.
+First, generate the bounding boxes of the patches on which Cellpose will be run. Here, the patches have a width and height of 1500 pixels, and an overlap of 50 pixels. We advise bigger sizes for real datasets. On the toy dataset, this will generate **4** patches.
 
 ```sh
 sopa patchify image tuto.zarr --patch-width-pixel 1500 --patch-overlap-pixel 50
@@ -56,7 +56,7 @@ sopa segmentation cellpose tuto.zarr \
 ```
 
 !!! Note
-    In the above commands, the `--diameter` and `--min-area` parameters are specific to the data type we work on. For your own data, consider using the default parameters from one of our [config files](https://github.com/prism-oncology/sopa/tree/main/workflow/config). Here, `min-area` is in pixels^2.
+    In the above commands, the `--diameter` and `--min-area` parameters are specific to the data type we work on. For your own data, consider using the default parameters from one of our [Nextflow config files](https://github.com/nf-core/sopa/tree/master/conf/predefined). Here, `min-area` is in pixels^2.
 
 At this stage, you executed 12 times Cellpose (3 steps on each of the 4 patches). Now, we need to resolve the conflict, i.e., merge the three segmentations into one. Note that we gave the paths to the temporary boundaries we made above.
 ```sh

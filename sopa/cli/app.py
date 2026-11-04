@@ -55,10 +55,6 @@ def convert(
         None,
         help="Optional path to write the SpatialData object. If not provided, will write to the `{data_path}.zarr` directory",
     ),
-    config_path: str = typer.Option(
-        None,
-        help="Path to the snakemake config. This can be useful in order not to provide the `--technology` and the `--kwargs` arguments",
-    ),
     overwrite: bool = typer.Option(
         False, help="Whether to overwrite the existing SpatialData object if already existing"
     ),
@@ -70,7 +66,7 @@ def convert(
 ):
     """Read any technology data as a SpatialData object and save it as a `.zarr` directory.
 
-    Either `--technology` or `--config-path` has to be provided."""
+    The `--technology` argument has to be provided."""
     import shutil
     from pathlib import Path
 
@@ -94,17 +90,7 @@ def convert(
             )
             sdata_path.rmdir()  # remove empty directory
 
-    assert technology is not None or config_path is not None, "Provide the argument `--technology` or `--config-path`"
-
-    if config_path is not None:
-        assert not kwargs, "Provide either a path to a config, or some kwargs, but not both"
-        with open(config_path) as f:
-            import yaml
-
-            config = yaml.safe_load(f)
-
-        technology = config["read"]["technology"]
-        kwargs = config["read"]["kwargs"]
+    assert technology is not None, "Provide the `--technology` argument to specify which technology is used."
 
     assert hasattr(io, technology), (
         f"Technology {technology} unknown. Currently available: xenium, merscope, visium_hd, cosmx, phenocycler, hyperion, macsima"

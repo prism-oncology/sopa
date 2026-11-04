@@ -54,7 +54,7 @@ def cellpose(
 
     Usage:
 
-        - [On one patch] Use this mode to run patches in parallel. Provide `--patch-index` to run one patch, and execute all patches in a parallel manner (you need to define your own parallelization, else, use the Snakemake pipeline).
+        - [On one patch] Use this mode to run patches in parallel. Provide `--patch-index` to run one patch, and execute all patches in a parallel manner (you need to define your own parallelization, else, use the `nf-core/sopa` pipeline).
 
         - [On all patches at once] For small images, you can run the segmentation method sequentially (`--patch-index` is not needed)
     """
@@ -249,7 +249,7 @@ def generic_staining(
 
         As for Cellpose, two modes ara available:
 
-        - [On one patch] Use this mode to run patches in parallel. Provide `--patch-index` to run one patch, and execute all patches in a parallel manner (you need to define your own parallelization, else, use the Snakemake pipeline).
+        - [On one patch] Use this mode to run patches in parallel. Provide `--patch-index` to run one patch, and execute all patches in a parallel manner (you need to define your own parallelization, else, use the `nf-core/sopa` pipeline).
 
         - [On all patches at once] For small images, you can run the segmentation method sequentially (`--patch-index` is not needed)
     """

@@ -1,7 +1,7 @@
 When installing `sopa` as written in our [getting-started guidelines](../../getting_started), a new command named `sopa` becomes available.
 
 !!! warning
-    The [Snakemake pipeline](https://prism-oncology.github.io/sopa/tutorials/snakemake/) is recommended to get started with Sopa. Using the CLI is advised if you want more flexibility, but you'll need to parallelize the segmentation yourself, as detailed below.
+    The [API](https://prism-oncology.github.io/sopa/tutorials/api_usage/) or [nf-core/sopa pipeline](https://nf-co.re/sopa/dev/) is recommended to get started with Sopa. Using the CLI can be used if you want more flexibility, but you'll need to parallelize the segmentation yourself, as detailed below.
 
 ## CLI helper
 
@@ -82,7 +82,7 @@ The command below will generate and save it on disk (you can change the path `tu
 
 ### Option 1: Cellpose
 
-First, generate the bounding boxes of the patches on which Cellpose will be run. Here, the patches have a width and height of 1500 pixels and an overlap of 50 pixels. We advise bigger sizes for real datasets (see our default parameters in one of our [config files](https://github.com/prism-oncology/sopa/tree/main/workflow/config)). On the toy dataset, this will generate **4** patches.
+First, generate the bounding boxes of the patches on which Cellpose will be run. Here, the patches have a width and height of 1500 pixels and an overlap of 50 pixels. We advise bigger sizes for real datasets. On the toy dataset, this will generate **4** patches.
 
 ```sh
 sopa patchify image tuto.zarr --patch-width-pixel 1500 --patch-overlap-pixel 50
@@ -106,7 +106,7 @@ Now, we can run Cellpose on each individual patch. You can either run it directl
     Execute the following command line on all `patch-index` (i.e., `0`, `1`, `2`, and `3`) to run Cellpose using DAPI only (you can add an additional channel, for instance, `--channels DAPI --channels PolyT`):
 
     !!! tip
-        Manually running the commands below can involve using many consecutive commands, so we recommend automatizing it. For instance, this can be done using Snakemake or Nextflow. This will help you parallelize it since you can run each task on separate jobs or using multithreading. You can also see how we do it in our [Snakefile](https://github.com/prism-oncology/sopa/blob/main/workflow/Snakefile). If you prefer using the already existing pipeline instead of the CLI, you can read our [Snakemake pipeline tutorial](https://prism-oncology.github.io/sopa/tutorials/snakemake/).
+        Manually running the commands below can involve using many consecutive commands, so we recommend automatizing it. For instance, this can be done using Snakemake or Nextflow. This will help you parallelize it since you can run each task on separate jobs or using multithreading.
 
         To automatically get the number of patches, you can either open the `tuto.zarr/.sopa_cache/patches_file_image` file, or compute `len(sdata['image_patches'])` in Python.
 
@@ -143,14 +143,14 @@ Now, we can run Cellpose on each individual patch. You can either run it directl
     ```
 
 !!! Note
-    In the above commands, the `--diameter` and `--min-area` parameters are specific to the data type we work on. For your own data, consider using the default parameters from one of our [config files](https://github.com/prism-oncology/sopa/tree/main/workflow/config). Here, `min-area` is in pixels^2.
+    In the above commands, the `--diameter` and `--min-area` parameters are specific to the data type we work on. For your own data, consider using the default parameters from one of our [Nextflow config files](https://github.com/nf-core/sopa/tree/master/conf/predefined). Here, `min-area` is in pixels^2.
 
 ### Option 2: Baysor
 
 Baysor needs a config to be executed. You can find official config examples [here](https://github.com/kharchenkolab/Baysor/tree/main/configs).
 
 !!! note
-    You can also reuse the Baysor parameter we have defined for each machine, as in our [Snakemake config files](https://github.com/prism-oncology/sopa/tree/main/workflow/config). Note that, our Snakemake config is a `.yaml` file, but the Baysor config should still be a `.toml` file.
+    You can also reuse the Baysor parameter we have defined for each machine, as in our [Nextflow config files](https://github.com/nf-core/sopa/tree/master/conf/predefined). Note that these are Nextflow `.config` files, but the Baysor config should still be a `.toml` file.
 
 For this tutorial, we will use the config below. Save this in a `config.toml` file.
 ```toml
@@ -177,7 +177,7 @@ nuclei_genes = ""
 cyto_genes = ""
 ```
 
-Then, we generate the bounding boxes of the patches on which Baysor will be run. Here, the patches have a width and height of 200 microns. We advise bigger sizes for real datasets (see our default parameters in one of our [config files](https://github.com/prism-oncology/sopa/tree/main/workflow/config)). On the toy dataset, this will generate **4** patches.
+Then, we generate the bounding boxes of the patches on which Baysor will be run. Here, the patches have a width and height of 200 microns. We advise bigger sizes for real datasets. On the toy dataset, this will generate **4** patches.
 
 ```sh
 sopa patchify transcripts tuto.zarr --patch-width-microns 200 --prior-shapes-key cellpose_boundaries
@@ -198,7 +198,7 @@ As for cellpose, you can either run Baysor directly on all patches, or on each p
     Now, we can run Baysor on each individual patch. Execute the following command lines to run Baysor on each patch (i.e., `0`, `1`, `2`, and `3`).
 
     !!! tip
-        Manually running the commands below can involve using many consecutive commands, so we recommend automatizing it. For instance, this can be done using Snakemake or Nextflow. This will help you parallelize it since you can run each task on separate jobs or using multithreading. You can also see how we do it in the [Sopa Snakemake pipeline](https://github.com/prism-oncology/sopa/blob/main/workflow/Snakefile).
+        Manually running the commands below can involve using many consecutive commands, so we recommend automatizing it. For instance, this can be done using Snakemake or Nextflow. This will help you parallelize it since you can run each task on separate jobs or using multithreading.
 
         To automatically get the number of patches, you can open the `tuto.zarr/.sopa_cache/patches_file_transcripts` file. This lists the names of the directories inside `tuto.zarr/.sopa_cache/baysor` related to each patch. If you selected an ROI, the excluded patches are effectively not in the `patches_file_transcripts` file.
 
