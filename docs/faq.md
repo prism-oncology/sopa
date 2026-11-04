@@ -118,7 +118,7 @@ print(f"{n_workers=}, {mem_worker0=:.3}GB")
 ## Which pipeline parameters should I use?
 
 Some parameters such as the Cellpose diameter is crucial and depends highly on the resolution of your technology (pixel size).
-As a guide, you can start from the parameters of the [config files](https://github.com/prism-oncology/sopa/tree/main/workflow/config) of your specific technology, and adjust them based on your knowledge of the tissue you work on.
+As a guide, you can start from the parameters of the [Nextflow config files](https://github.com/nf-core/sopa/tree/master/conf/predefined) for your specific technology, and adjust them based on your knowledge of the tissue you work on.
 
 Here are some parameters which are important to check: `diameter` (in pixels for cellpose), `min_area` (in pixels^2 for cellpose, in microns^2 for baysor), `scale` (in microns for baysor), `pixel_size` (for the Xenium Explorer conversion, to have the right scale during display).
 
@@ -153,14 +153,14 @@ Otherwise, if you have inside the tissue some small cells artefacts, `Sopa` offe
 
 ## How to get more cells with Cellpose?
 
-- The main Cellpose parameter to check is `diameter`, i.e. a typical cell diameter **in pixels**. Note that this is highly specific to the technology you're using since the micron-to-pixel ratio can differ. We advise you to start with the default parameter for your technology of interest (see the `diameter` parameter inside our config files [here](https://github.com/prism-oncology/sopa/tree/main/workflow/config)).
+- The main Cellpose parameter to check is `diameter`, i.e. a typical cell diameter **in pixels**. Note that this is highly specific to the technology you're using since the micron-to-pixel ratio can differ. We advise you to start with the default parameter for your technology of interest (see the `cellpose_diameter` parameter inside our Nextflow config files [here](https://github.com/nf-core/sopa/tree/master/conf/predefined)).
 - Maybe `min_area` is too high, and all the cells are filtered because they are smaller than this area. Remind that, when using Cellpose, the areas correspond to pixels^2.
-- This can be due to a low image quality. If the image is too pixelated, consider increasing `gaussian_sigma` (e.g., `2`) under the cellpose parameters of our config. If the image has a low contrast, consider increasing `clip_limit` (e.g., `0.3`). These parameters are detailed in [this example config](https://github.com/prism-oncology/sopa/blob/main/workflow/config/example_commented.yaml).
+- This can be due to a low image quality. If the image is too pixelated, consider increasing `gaussian_sigma` (e.g., `2`). If the image has a low contrast, consider increasing `clip_limit` (e.g., `0.3`). These parameters are detailed in the [`sopa.segmentation.cellpose`](../api/segmentation/#sopa.segmentation.cellpose) documentation.
 - Consider updating the official Cellpose parameters. In particular, try `cellprob_threshold=-6` and `flow_threshold=2`.
 
 ## How to use a custom Cellpose model?
 
-You can use any existing [Cellpose model](https://cellpose.readthedocs.io/en/latest/models.html) with the `model_type` argument (via the API, CLI, or Snakemake pipeline). For the Snakemake pipeline, see [here](https://github.com/prism-oncology/sopa/blob/main/workflow/config/example_commented.yaml) how to set this argument.
+You can use any existing [Cellpose model](https://cellpose.readthedocs.io/en/latest/models.html) with the `model_type` argument (via the API or CLI).
 If you have a custom pretrained model, use the `pretrained_model` argument instead of `model_type`, and give the path to your cellpose model.
 
 ## How to use the GPU for Cellpose?
@@ -197,7 +197,7 @@ segmentation:
 
 ## How to use a prior cell segmentation?
 
-If you have MERSCOPE or Xenium data, you probably already have a cell segmentation. This can be used as a prior for Proseg or Baysor, instead of running Cellpose with Sopa. For that, you have an existing config file for the Snakemake pipeline for both [MERSCOPE](https://github.com/prism-oncology/sopa/blob/main/workflow/config/merscope/baysor_vizgen.yaml) and [Xenium](https://github.com/prism-oncology/sopa/blob/main/workflow/config/xenium/baysor_prior.yaml) data. If using the API/CLI, consider using the `prior_shapes_key` and the `unassigned_value` arguments when creating the patches for the transcripts. For MERSCOPE data, `prior_shapes_key="cell_id"` and `unassigned_value=-1`. For Xenium data, `prior_shapes_key="cell_id"` and `unassigned_value="UNASSIGNED"`. You can also decide to run Cellpose via Sopa, and then use it as a prior: in that case, simply pass `prior_shapes_key="cellpose_boundaries"` after running cellpose.
+If you have MERSCOPE or Xenium data, you probably already have a cell segmentation. This can be used as a prior for Proseg or Baysor, instead of running Cellpose with Sopa. For that, consider using the `prior_shapes_key` and the `unassigned_value` arguments when creating the patches for the transcripts. For MERSCOPE data, `prior_shapes_key="cell_id"` and `unassigned_value=-1`. For Xenium data, `prior_shapes_key="cell_id"` and `unassigned_value="UNASSIGNED"`. You can also decide to run Cellpose via Sopa, and then use it as a prior: in that case, simply pass `prior_shapes_key="cellpose_boundaries"` after running cellpose.
 
 ## How to optimize the segmentation parameters?
 
