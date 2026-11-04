@@ -44,14 +44,14 @@ pip install sopa
 > [!NOTE]
 > See this [installation section](https://prism-oncology.github.io/sopa/getting_started/) for more details about extras and other installations modes.
 
-## Features
+## Usage modes
 Sopa comes in four different flavours, each corresponding to a different use case:
-- `API`: use directly `sopa` as a Python package for complete flexibility and customization.
-- `Snakemake pipeline`: choose a config, and run our pipeline on your spatial data in a couple of minutes.
-- `nf-core/sopa`: run Sopa with Nextflow (see [this repo](https://github.com/nf-core/sopa) and the corresponding [usage guide](https://nf-co.re/sopa/usage)). Great for Docker users.
+- `API`: use directly `sopa` as a Python package for complete flexibility and customization (example below).
+- `nf-core/sopa`: run Sopa with Nextflow (see [this repo](https://github.com/nf-core/sopa) and the corresponding [usage guide](https://nf-co.re/sopa/usage)).
+- `Snakemake pipeline`: choose a config, and run our pipeline on your spatial data in a couple of minutes (deprecated in favor of `nf-core/sopa`, see the public archive [here](https://github.com/prism-oncology/snakemake-sopa)).
 - `CLI`: use our command-line-interface for prototyping quickly your own pipeline (advanced users).
 
-### API
+## API usage
 
 Below is a minimal example of API usage. For a complete API description, please refer to the [documentation](https://prism-oncology.github.io/sopa/tutorials/api_usage/).
 
@@ -63,31 +63,6 @@ sdata = sopa.io.xenium("path/to/data") # reading Xenium data
 sopa.make_image_patches(sdata) # creating overlapping patches
 sopa.segmentation.cellpose(sdata, "DAPI", diameter=30) # running cellpose segmentation
 sopa.aggregate(sdata) # counting the transcripts inside the cells
-```
-
-### Snakemake pipeline
-
-Clone our repository, choose a config [here](https://github.com/prism-oncology/sopa/tree/main/workflow/config) (or create your own), and execute our pipeline locally or on a high-performance cluster:
-```bash
-git clone https://github.com/prism-oncology/sopa.git
-cd sopa/workflow
-snakemake --configfile=/path/to/yaml_config --config data_path=/path/to/data_directory --cores 1 --use-conda
-```
-
-For more details on `snakemake` configuration and how to properly setup your environments, please refer to the [documentation](https://prism-oncology.github.io/sopa/tutorials/snakemake/).
-
-### CLI
-
-Below are examples of commands that can be run with the `sopa` CLI. For a complete description of the CLI, please refer to the [documentation](https://prism-oncology.github.io/sopa/tutorials/cli_usage/).
-
-```bash
-> sopa --help # show command names and arguments
-> sopa convert merscope_directory --technology merscope # read some data
-> sopa patchify image merscope_directory.zarr # make patches for low-memory segmentation
-> sopa segmentation cellpose merscope_directory.zarr --diameter 60 --channels DAPI # segmentation
-> sopa resolve cellpose merscope_directory.zarr # resolve segmentation conflicts at boundaries
-> sopa aggregate merscope_directory.zarr --average-intensities # transcripts/channels aggregation
-> sopa explorer write merscope_directory.zarr # convert for interactive vizualisation
 ```
 
 ## Cite us
