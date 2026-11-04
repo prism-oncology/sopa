@@ -259,21 +259,10 @@ This **mandatory** step turns the data into an `AnnData` object. We can count th
 
 ## Annotation
 
-If desired, cell-type annotation can be run. Currently, we support Tangram for transcript-based annotation and a simple scoring approach for channel-based annotation (called channel z-score).
+!!! warning
+    Sopa is not primarly designed for cell-type annotation. It used to wraps some annotation methods, but we decided to deprecated some of them. Indeed, most annotation methods natively accept AnnData objects, so you have the flexibility to easily plug in whichever tool best fits your analysis by applying it directly to `sdata["table"]`.
 
-=== "Channel Z-score annotation"
-    For now, our fluorescence-based annotation is very simple. We provide a dictionary where a channel is associated with a population. Then, each cell is associated with the cell type whose corresponding channel is the brightest (according to a certain Z-score). In this tutorial example, we can annotate Tumoral cells, T cells, and B cells:
-    ```sh
-    sopa annotate fluorescence tuto.zarr --marker-cell-dict '{"CK": "Tumoral cell", "CD3": "T cell", "CD20": "B cell"}'
-    ```
-    !!! note "More complex annotation"
-        If you have a large number of channels, it may be preferable to run clustering on your data, for instance, using [Leiden clustering](https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.leiden.html). Then, you can annotate each cluster manually by plotting a heatmap of all channels expressions per cluster.
-=== "Tangram annotation"
-    [Tangram](https://github.com/broadinstitute/Tangram) is a transcript-based annotation that uses an annotated single-cell reference. Let's suppose your reference `AnnData` object is stored in a file called `adata_reference.h5ad` (preferably, keep raw counts), and the cell type is in `adata.obs["cell_type"]`. Then, you can annotate your spatial data as follows:
-    ```sh
-    sopa annotate tangram tuto.zarr --sc-reference-path adata_reference.h5ad --cell-type-key cell_type
-    ```
-
+Run `sopa annotate --help` to see the available annotation methods (including the deprecated ones).
 
 ## Pipeline report
 
