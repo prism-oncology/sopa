@@ -5,7 +5,7 @@ inputs:
   python-version:
     description: "Python version to use"
     required: true
-    default: "3.13"
+    default: "3.12"
   uv-version:
     description: "uv version to use"
     required: true
@@ -26,5 +26,5 @@ runs:
         cache-suffix: ${{ inputs.python-version }}
 
     - name: Install Python dependencies
-      run: uv sync --frozen
+      run: uv sync --all-extras --dev --upgrade --no-extra stardist --frozen
       shell: bash
