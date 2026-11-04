@@ -117,7 +117,7 @@ def instanseg_patch(
             **instanseg_eval_kwargs,
         )
 
-        return instances[0, 0].numpy().astype(np.int32)
+        return instances[0, 0].numpy(force=True).astype(np.int32)
 
     return partial(
         _,
