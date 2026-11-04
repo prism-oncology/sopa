@@ -26,7 +26,7 @@ jobs:
 
   tests:
     needs: [pre-commit]
-    name: "pytest"
+    name: "pytest - uv"
     runs-on: ubuntu-latest
 
     strategy:
@@ -53,7 +53,7 @@ jobs:
 
   test_wsi:
     needs: [pre-commit]
-    name: "${{ matrix.os }} | pytest wsi"
+    name: "pytest - uv | wsi"
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -73,7 +73,7 @@ jobs:
 
   test_cellpose_v4:
     needs: [pre-commit]
-    name: "${{ matrix.os }} | pytest cellpose v4"
+    name: "pytest - uv | cellpose v4"
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -93,7 +93,7 @@ jobs:
 
   test_pip_install:
     needs: [pre-commit]
-    name: "${{ matrix.os }} | pytest with pip install"
+    name: "pytest - pip (3.14)"
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
