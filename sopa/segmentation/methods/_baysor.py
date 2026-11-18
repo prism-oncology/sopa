@@ -119,6 +119,7 @@ class BaysorPatch:
 
     def __call__(self, patch_dir: Path):
         _copy_segmentation_config(patch_dir / SopaFiles.TOML_CONFIG_FILE, self.config)
+        _filter_transcripts_csv(patch_dir / SopaFiles.TRANSCRIPTS_FILE, self.config)
 
         import subprocess
 
@@ -189,6 +190,29 @@ def _get_default_config(sdata: SpatialData, prior_shapes_key: str | None, scale:
     log.info(f"The Baysor config was not provided, using the following by default:\n{config}")
 
     return config
+
+
+def _filter_transcripts_csv(path: Path, config: dict | str):
+    """Keep only the columns baysor needs, dropping extras cols like transcript_id that baysor-cpp can't parse."""
+    if isinstance(config, str):
+        return
+
+    import pandas as pd
+
+    data_config = config.get("data", {})
+    keep = {
+        data_config.get("x", "x"),
+        data_config.get("y", "y"),
+        data_config.get("z", "z"),
+        data_config.get("gene", "gene"),
+    }
+
+    df = pd.read_csv(path, nrows=0)
+    drop_cols = [c for c in df.columns if c not in keep and c != SopaKeys.SOPA_PRIOR]
+    if drop_cols:
+        df = pd.read_csv(path)
+        df.drop(columns=drop_cols, inplace=True)
+        df.to_csv(path, index=False)
 
 
 def _copy_segmentation_config(path: Path | str, config: dict | str):
