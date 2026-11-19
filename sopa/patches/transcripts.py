@@ -72,6 +72,11 @@ class OnDiskTranscriptPatches(Patches2D):
             self.write_points(patches_geo_df, centroids, csv_name=self.centroids_csv_name)
 
         gene_column = get_feature_key(self.points)
+        keep = {"x", "y", "z", gene_column, SopaKeys.SOPA_PRIOR, SopaKeys.LOW_QUALITY_TRANSCRIPT_KEY} & set(
+            self.points.columns
+        )
+        self.points = self.points[list(keep)]
+
         with ProgressBar():
             tasks = [
                 delayed(self.query_points_partition)(patches_geo_df, part, gene_column=gene_column)
