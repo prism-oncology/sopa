@@ -62,6 +62,9 @@ def resolve(
         table_conflicts.obs_names = new_ids
         table_conflicts = [table_conflicts]
 
+    for i, adata in enumerate(adatas):
+        adata.obs_names = f"{i}_" + adata.obs_names.astype(str)
+
     valid_ids = set(geo_df.index)
     table = anndata.concat(
         [adata[list(valid_ids & set(adata.obs_names))] for adata in adatas] + table_conflicts,
@@ -170,7 +173,7 @@ def _resolve_patches(
 
     patch_indices = np.arange(len(patches_cells)).repeat([len(cells) for cells in patches_cells])
     cells = [cell for cells in patches_cells for cell in cells]
-    segmentation_ids = np.array([cell_id for ids in patch_ids for cell_id in ids])
+    segmentation_ids = np.array([f"{patch_i}_{cell_id}" for patch_i, ids in enumerate(patch_ids) for cell_id in ids])
 
     cells_resolved, cells_indices = solve_conflicts(cells, patch_indices=patch_indices, return_indices=True)
 
