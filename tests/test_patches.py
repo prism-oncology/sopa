@@ -221,6 +221,29 @@ def test_patch_assignment():
     assert (pd.read_csv(cache_dir / "transcript_patches" / "3" / "transcripts.csv").genes == genes[4:]).all()
 
 
+def test_transcript_id_column_dropped():
+    """transcript_id with string values (e.g. Ensembl IDs in MERSCOPE 2.0) is dropped from patch CSVs."""
+    df = pd.DataFrame({
+        "x": [0, 1, 2],
+        "y": [0, 1, 2],
+        "genes": ["G1", "G2", "G3"],
+        "transcript_id": ["ENSMUST00000028794", "ENSMUST00000066845", "ENSMUST00000115263"],
+    })
+    points = {"transcripts": PointsModel.parse(df, feature_key="genes")}
+    sdata = SpatialData(points=points)
+
+    sopa.make_transcript_patches(sdata, patch_width=-1, min_points_per_patch=0)
+
+    cache_dir = sopa.utils.get_cache_dir(sdata)
+    patch_dirs = list((cache_dir / "transcript_patches").iterdir())
+    assert len(patch_dirs) == 1
+
+    csv = pd.read_csv(patch_dirs[0] / "transcripts.csv")
+    assert "transcript_id" not in csv.columns
+    assert "genes" in csv.columns
+    assert (csv.genes == ["G1", "G2", "G3"]).all()
+
+
 def test_is_full_slide():
     sdata = sopa.io.toy_dataset(length=500)
 
