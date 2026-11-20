@@ -63,6 +63,11 @@ class OnDiskTranscriptPatches(Patches2D):
 
         self.assign_prior_segmentation()
 
+        # TODO: remove once https://github.com/kharchenkolab/Baysor/issues/189 is fixed
+        drop = {"transcript_id"} & set(self.points.columns)
+        if drop:
+            self.points = self.points.drop(columns=list(drop))
+
         self.setup_patches_directory()
 
         patches_geo_df = self.geo_df.geometry.to_frame()
@@ -72,10 +77,6 @@ class OnDiskTranscriptPatches(Patches2D):
             self.write_points(patches_geo_df, centroids, csv_name=self.centroids_csv_name)
 
         gene_column = get_feature_key(self.points)
-        keep = {"x", "y", "z", gene_column, SopaKeys.SOPA_PRIOR, SopaKeys.LOW_QUALITY_TRANSCRIPT_KEY} & set(
-            self.points.columns
-        )
-        self.points = self.points[list(keep)]
 
         with ProgressBar():
             tasks = [
