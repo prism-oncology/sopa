@@ -46,10 +46,10 @@ pip install sopa
 
 ## Usage modes
 Sopa comes in four different flavours, each corresponding to a different use case:
-- `API`: use directly `sopa` as a Python package for complete flexibility and customization (example below).
-- `nf-core/sopa`: run Sopa with Nextflow (see [this repo](https://github.com/nf-core/sopa) and the corresponding [usage guide](https://nf-co.re/sopa/usage)).
-- `Snakemake pipeline`: choose a config, and run our pipeline on your spatial data in a couple of minutes (deprecated in favor of `nf-core/sopa`, see the public archive [here](https://github.com/prism-oncology/snakemake-sopa)).
-- `CLI`: use our command-line-interface for prototyping quickly your own pipeline (advanced users).
+1. `API`: use directly `sopa` as a Python package for full flexibility and customization — see a tutorial [here](../tutorials/api_usage).
+2. `nf-core/sopa`: run Sopa with Nextflow — see the corresponding [usage guide](https://nf-co.re/sopa/usage).
+3. `Snakemake pipeline` — deprecated in favor of `nf-core/sopa`, see the public archive [here](https://github.com/prism-oncology/snakemake-sopa).
+4. `CLI`: use our [command-line-interface](../tutorials/cli_usage) to prototype your custom pipeline.
 
 ## API usage
 
