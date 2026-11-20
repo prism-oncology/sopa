@@ -63,7 +63,7 @@ def resolve(
         table_conflicts = [table_conflicts]
 
     for i, adata in enumerate(adatas):
-        adata.obs_names = [f"{i}_{name}" for name in adata.obs_names]
+        adata.obs_names = f"{i}_" + adata.obs_names.astype(str)
 
     valid_ids = set(geo_df.index)
     table = anndata.concat(
