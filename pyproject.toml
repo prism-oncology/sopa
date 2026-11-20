@@ -1,6 +1,6 @@
 [project]
 name = "sopa"
-version = "2.3.0"
+version = "2.3.1"
 description = "Spatial-omics pipeline and analysis"
 authors = [{ name = "Quentin Blampey", email = "quentin.blampey@gmail.com" }]
 requires-python = ">=3.12"
