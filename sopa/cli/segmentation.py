@@ -436,6 +436,30 @@ def proseg(
 
 
 @app_segmentation.command()
+def segger(
+    sdata_path: str = typer.Argument(help=SDATA_HELPER),
+    prior_shapes_key: str | None = typer.Option(
+        None,
+        help="Key of `sdata` containing the prior cell boundaries. Inferred from transcript patches by default.",
+    ),
+    kwargs: str = typer.Option(
+        {},
+        callback=ast.literal_eval,
+        help="Additional kwargs for `segger.segment()`. This should be a dictionary in inline string format, e.g. '{\"n_epochs\": 1}'.",
+    ),
+):
+    """Perform Segger segmentation. Requires a single transcript patch with prior segmentation."""
+    from sopa.io.standardize import read_zarr_standardized
+    from sopa.segmentation.methods import segger
+
+    sdata = read_zarr_standardized(sdata_path)
+
+    segger(sdata, prior_shapes_key=prior_shapes_key, **kwargs)
+
+    _log_whether_to_resolve(None)
+
+
+@app_segmentation.command()
 def tissue(
     sdata_path: str = typer.Argument(help=SDATA_HELPER),
     image_key: str = typer.Option(
