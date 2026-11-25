@@ -82,12 +82,8 @@ def segger(
 
 
 def _resolve_prior_shapes_key(sdata: SpatialData) -> str:
-    """Resolve the prior shapes key from transcript patches metadata.
+    """prior_shapes_key in patches metadata can be a column name, not a shapes element. This resolves it to polygons"""
 
-    The transcript patches store a `prior_shapes_key` that can be either a shapes
-    element name (e.g. ``"cellpose_boundaries"``) or a column name in the transcripts
-    (e.g. ``"cell_id"``). Segger needs actual polygons, so we resolve to a shapes element.
-    """
     candidate = sdata[SopaKeys.TRANSCRIPTS_PATCHES][SopaKeys.PRIOR_SHAPES_KEY].iloc[0]
 
     if candidate in sdata.shapes:
@@ -192,14 +188,12 @@ def _read_segger(
     adata = anndata.read_h5ad(adata_path)
     geo_df = gpd.read_parquet(boundaries_path)
 
-    # segger stores .X under a None-keyed layer
     if None in adata.layers:
         del adata.layers[None]
 
     if "cell_id" in geo_df.columns and geo_df.index.name != "cell_id":
         geo_df = geo_df.set_index("cell_id")
 
-    # adata and geo_df may differ in size; keep only common cells
     common_ids = adata.obs_names.intersection(geo_df.index)
     adata = adata[common_ids].copy()
     geo_df = geo_df.loc[common_ids]

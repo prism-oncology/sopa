@@ -7,7 +7,7 @@ Sopa is designed to run on all spatial technologies at single-cell resolution, b
 
 ## Xenium or MERSCOPE
 
-For Xenium or MERSCOPE data, we recommend using a transcript-based segmentation tool, e.g., Baysor or Proseg. With the Xenium 5k panel, Proseg is recommended due to its fast results and high quality.
+For Xenium or MERSCOPE data, we recommend using a transcript-based segmentation tool, e.g., Baysor, Proseg, or Segger. With the Xenium 5k panel, Proseg is recommended due to its fast results and high quality. [Segger](../../api/segmentation/#sopa.segmentation.segger) is a good alternative if you have a CUDA-compatible GPU.
 
 To use the prior 10X or Vizgen segmentation, you need to precise it in [`sopa.make_transcript_patches`](../../api/patches/#sopa.make_transcript_patches) - with `sopa>=2.0.4`, use `prior_shapes_key="auto"` to automatically detect the prior and use it for Baysor/Proseg.
 
