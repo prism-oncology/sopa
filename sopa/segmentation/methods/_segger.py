@@ -171,6 +171,13 @@ def _read_segger_outputs(
 
     geo_df = gpd.read_parquet(boundaries_path)
 
+    if "cell_id" in geo_df.columns:
+        geo_df = geo_df.set_index("cell_id")
+
+    common_ids = adata.obs_names.intersection(geo_df.index)
+    adata = adata[common_ids].copy()
+    geo_df = geo_df.loc[common_ids]
+
     geo_df.crs = None
     geo_df = ShapesModel.parse(geo_df, transformations=transformations)
 
