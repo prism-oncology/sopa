@@ -63,7 +63,6 @@ def segger(
 
     with tempfile.TemporaryDirectory() as output_dir:
         _run_segger(transcripts, boundaries, output_dir, **kwargs)
-        _export_segger_boundaries(output_dir)
         adata, geo_df = _read_segger_outputs(output_dir, copy_transformations(sdata[points_key]))
 
     add_parsed_table(sdata, adata, geo_df, key_added, SopaKeys.TABLE)
@@ -140,24 +139,13 @@ def _run_segger(
 
     segger.configure_memory()
 
+    kwargs.setdefault("export", ["anndata", "boundaries"])
+
     segger.segment(
         output_directory=output_directory,
         transcripts=transcripts,
         boundaries=boundaries,
         **kwargs,
-    )
-
-
-def _export_segger_boundaries(output_directory: str):
-    import segger
-
-    export_dir = Path(output_directory) / "export"
-    segmentation_path = Path(output_directory) / "segger_segmentation.parquet"
-
-    segger.export(
-        "boundaries",
-        segmentation=str(segmentation_path),
-        output_directory=str(export_dir),
     )
 
 
