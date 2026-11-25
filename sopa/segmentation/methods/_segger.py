@@ -2,10 +2,13 @@ import logging
 import tempfile
 from pathlib import Path
 
+import anndata
 import geopandas as gpd
 import pandas as pd
+from anndata import AnnData
 from spatialdata import SpatialData
 from spatialdata.models import ShapesModel
+from spatialdata.transformations import BaseTransformation
 
 from ...aggregation.table import add_parsed_table
 from ...constants import SopaKeys
@@ -40,14 +43,18 @@ def segger(
         [`sopa.make_transcript_patches`](../patches/#sopa.make_transcript_patches) with `patch_width=None`
         and a `prior_shapes_key` before running segger.
 
+        Aggregation is not necessary after running segger (but can be useful if you want e.g. channel aggregation).
+
     Args:
         sdata: A `SpatialData` object.
         delete_cache: Whether to delete the cache after segmentation.
-        prior_shapes_key: Key of `sdata` containing the prior cell boundaries (inferred from transcript patches by default).
+        prior_shapes_key: Key of `sdata` containing the prior cell boundaries. If not provided, inferred from the transcript patches metadata. Must be a shapes element in `sdata`.
         key_added: Name of the shapes element to be added to `sdata.shapes`.
         **kwargs: Additional keyword arguments passed to `segger.segment()` (e.g. `n_epochs`).
     """
     _check_transcript_patches(sdata, with_prior=True)
+
+    points_key = sdata[SopaKeys.TRANSCRIPTS_PATCHES][SopaKeys.POINTS_KEY].iloc[0]
 
     patches_dirs = get_transcripts_patches_dirs(sdata)
     assert len(patches_dirs) == 1, (
@@ -55,15 +62,14 @@ def segger(
     )
     patch_dir = Path(patches_dirs[0])
 
-    points_key = sdata[SopaKeys.TRANSCRIPTS_PATCHES][SopaKeys.POINTS_KEY].iloc[0]
     if prior_shapes_key is None:
-        prior_shapes_key = sdata[SopaKeys.TRANSCRIPTS_PATCHES][SopaKeys.PRIOR_SHAPES_KEY].iloc[0]
+        prior_shapes_key = _resolve_prior_shapes_key(sdata)
 
-    transcripts, boundaries = _prepare_segger_inputs(sdata, patch_dir, points_key, prior_shapes_key)
+    transcripts, boundaries = _prepare_inputs(sdata, patch_dir, points_key, prior_shapes_key)
 
     with tempfile.TemporaryDirectory() as output_dir:
         _run_segger(transcripts, boundaries, output_dir, **kwargs)
-        adata, geo_df = _read_segger_outputs(output_dir, copy_transformations(sdata[points_key]))
+        adata, geo_df = _read_segger(output_dir, copy_transformations(sdata[points_key]))
 
     add_parsed_table(sdata, adata, geo_df, key_added, SopaKeys.TABLE)
 
@@ -72,10 +78,40 @@ def segger(
     if delete_cache:
         delete_transcripts_patches_dirs(sdata)
 
-    log.info(f"Segger segmentation completed: {len(geo_df)} cells added to sdata['{key_added}'].")
+    log.info(f"Segger table and boundaries added to sdata['{key_added}'] ({len(geo_df)} cells).")
 
 
-def _prepare_segger_inputs(
+def _resolve_prior_shapes_key(sdata: SpatialData) -> str:
+    """Resolve the prior shapes key from transcript patches metadata.
+
+    The transcript patches store a `prior_shapes_key` that can be either a shapes
+    element name (e.g. ``"cellpose_boundaries"``) or a column name in the transcripts
+    (e.g. ``"cell_id"``). Segger needs actual polygons, so we resolve to a shapes element.
+    """
+    candidate = sdata[SopaKeys.TRANSCRIPTS_PATCHES][SopaKeys.PRIOR_SHAPES_KEY].iloc[0]
+
+    if candidate in sdata.shapes:
+        return candidate
+
+    non_utility_shapes = [
+        k for k in sdata.shapes if k not in (SopaKeys.TRANSCRIPTS_PATCHES, SopaKeys.PATCHES, SopaKeys.ROI)
+    ]
+
+    assert len(non_utility_shapes) > 0, (
+        "Segger requires prior cell boundary polygons in `sdata.shapes`. "
+        "Run a staining-based segmentation (e.g. cellpose) first, or provide `prior_shapes_key` explicitly."
+    )
+
+    if len(non_utility_shapes) == 1:
+        return non_utility_shapes[0]
+
+    raise ValueError(
+        f"Could not infer `prior_shapes_key`: '{candidate}' is not a shapes element, "
+        f"and multiple candidates exist: {non_utility_shapes}. Provide `prior_shapes_key` explicitly."
+    )
+
+
+def _prepare_inputs(
     sdata: SpatialData,
     patch_dir: Path,
     points_key: str,
@@ -85,14 +121,12 @@ def _prepare_segger_inputs(
 
     feature_key = get_feature_key(sdata[points_key], raise_error=True)
 
-    rename_map = {}
-    if feature_key != "feature_name":
-        rename_map[feature_key] = "feature_name"
     if SopaKeys.SOPA_PRIOR in transcripts.columns:
-        rename_map[SopaKeys.SOPA_PRIOR] = "cell_id"
+        transcripts = transcripts.drop(columns=["cell_id"], errors="ignore")
+        transcripts = transcripts.rename(columns={SopaKeys.SOPA_PRIOR: "cell_id"})
 
-    if rename_map:
-        transcripts = transcripts.rename(columns=rename_map)
+    if feature_key != "feature_name":
+        transcripts = transcripts.rename(columns={feature_key: "feature_name"})
 
     assert "cell_id" in transcripts.columns, (
         "Transcripts must have a cell_id column (from prior segmentation via `sopa.make_transcript_patches`)."
@@ -102,19 +136,13 @@ def _prepare_segger_inputs(
 
     prior_shapes = to_intrinsic(sdata, prior_shapes_key, points_key)
 
+    boundaries = gpd.GeoDataFrame({
+        "cell_id": [str(i + 1) for i in range(len(prior_shapes))],
+        "boundary_type": "cell",
+        "geometry": prior_shapes.geometry.values,
+    })
+
     has_nucleus = "overlaps_nucleus" in transcripts.columns or "CellComp" in transcripts.columns
-
-    boundaries_records = []
-    for i, (_, row) in enumerate(prior_shapes.iterrows()):
-        cell_id = str(i + 1)
-        boundaries_records.append({
-            "cell_id": cell_id,
-            "boundary_type": "cell",
-            "geometry": row.geometry,
-        })
-
-    boundaries = gpd.GeoDataFrame(boundaries_records)
-
     if not has_nucleus:
         log.warning(
             "No nucleus information found in transcripts. "
@@ -149,12 +177,10 @@ def _run_segger(
     )
 
 
-def _read_segger_outputs(
+def _read_segger(
     output_directory: str,
-    transformations: dict,
-) -> tuple:
-    import anndata
-
+    transformations: dict[str, BaseTransformation],
+) -> tuple[AnnData, gpd.GeoDataFrame]:
     export_dir = Path(output_directory) / "export"
 
     adata_path = export_dir / "adata.h5ad"
@@ -166,12 +192,14 @@ def _read_segger_outputs(
     adata = anndata.read_h5ad(adata_path)
     geo_df = gpd.read_parquet(boundaries_path)
 
+    # segger stores .X under a None-keyed layer
     if None in adata.layers:
         del adata.layers[None]
 
     if "cell_id" in geo_df.columns and geo_df.index.name != "cell_id":
         geo_df = geo_df.set_index("cell_id")
 
+    # adata and geo_df may differ in size; keep only common cells
     common_ids = adata.obs_names.intersection(geo_df.index)
     adata = adata[common_ids].copy()
     geo_df = geo_df.loc[common_ids]
