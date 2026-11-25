@@ -157,7 +157,7 @@ def _read_segger_outputs(
 
     output_dir = Path(output_directory)
 
-    adata_path = output_dir / "adata.h5ad"
+    adata_path = output_dir / "export/adata.h5ad"
     assert adata_path.exists(), f"Segger output not found at {adata_path}"
 
     boundaries_path = output_dir / "segger_segmentation.parquet"
