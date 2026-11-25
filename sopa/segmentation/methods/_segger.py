@@ -164,14 +164,12 @@ def _read_segger_outputs(
     assert boundaries_path.exists(), f"Segger boundaries not found at {boundaries_path}"
 
     adata = anndata.read_h5ad(adata_path)
-
-    adata.obs = adata.obs.loc[:, adata.obs.columns.notna()]
-    adata.var = adata.var.loc[:, adata.var.columns.notna()]
-    adata.uns = {k: v for k, v in adata.uns.items() if k is not None}
-
     geo_df = gpd.read_parquet(boundaries_path)
 
-    if "cell_id" in geo_df.columns:
+    if None in adata.layers:
+        del adata.layers[None]
+
+    if "cell_id" in geo_df.columns and geo_df.index.name != "cell_id":
         geo_df = geo_df.set_index("cell_id")
 
     common_ids = adata.obs_names.intersection(geo_df.index)
