@@ -185,9 +185,10 @@ def _run_segger(
     if is_default:
         segger.configure_memory()
 
-    kwargs.setdefault("export", ["anndata", "boundaries"])
+    assert "export" not in kwargs, "`export` is set by sopa (anndata + boundaries) and can't be overridden."
 
     segger.segment(
+        export=["anndata", "boundaries"],
         output_directory=output_directory,
         transcripts=transcripts,
         boundaries=boundaries,
