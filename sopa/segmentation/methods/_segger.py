@@ -1,5 +1,4 @@
 import logging
-import tempfile
 from pathlib import Path
 
 import anndata
@@ -67,9 +66,16 @@ def segger(
 
     transcripts, boundaries = _prepare_inputs(sdata, patch_dir, points_key, prior_shapes_key)
 
-    with tempfile.TemporaryDirectory() as output_dir:
-        _run_segger(transcripts, boundaries, output_dir, **kwargs)
-        adata, geo_df = _read_segger(output_dir, copy_transformations(sdata[points_key]))
+    output_dir = patch_dir / "segger_output"
+    output_dir.mkdir(exist_ok=True)
+
+    try:
+        _run_segger(transcripts, boundaries, str(output_dir), **kwargs)
+        adata, geo_df = _read_segger(str(output_dir), copy_transformations(sdata[points_key]))
+    finally:
+        import shutil
+
+        shutil.rmtree(output_dir, ignore_errors=True)
 
     add_parsed_table(sdata, adata, geo_df, key_added, SopaKeys.TABLE)
 
