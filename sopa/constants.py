@@ -7,6 +7,7 @@ class SopaKeys:
     STARDIST_BOUNDARIES = "stardist_boundaries"
     PROSEG_BOUNDARIES = "proseg_boundaries"
     INSTANSEG_BOUNDARIES = "instanseg_boundaries"
+    SEGGER_BOUNDARIES = "segger_boundaries"
 
     # Patches keys
     PATCHES = "image_patches"

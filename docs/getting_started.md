@@ -62,7 +62,7 @@ By default, `sopa` only install the minimal dependencies to avoid a heavy instal
     ```sh
     pip install 'sopa[cellpose]'
 
-    # you can also combine extras: pip install 'sopa[cellpose,baysor,wsi,stardist,instanseg]'
+    # you can also combine extras: pip install 'sopa[cellpose,baysor,wsi,stardist,instanseg,segger]'
     ```
 
 === "Proseg"
@@ -104,6 +104,13 @@ By default, `sopa` only install the minimal dependencies to avoid a heavy instal
     ```sh
     pip install 'sopa[instanseg]'
     ```
+=== "Segger"
+    If you want to use [Segger](https://github.com/dpeerlab/segger) for cell segmentation, you can install the corresponding extra. Note that Segger requires CUDA and a compatible GPU, and Python >= 3.13.
+
+    ```sh
+    pip install 'sopa[segger]'
+    ```
+
 === "Comseg"
     If you want to use [Comseg](https://github.com/fish-quant/ComSeg) for cell segmentation, you can install it via pip:
 

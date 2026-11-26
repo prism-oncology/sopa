@@ -14,6 +14,8 @@
 
 ::: sopa.segmentation.proseg
 
+::: sopa.segmentation.segger
+
 ::: sopa.segmentation.custom_staining_based
 
 ## Tissue segmentation

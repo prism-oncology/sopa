@@ -5,4 +5,5 @@ from ._custom import custom_staining_based
 from ._dummy import dummy_method
 from ._instanseg import instanseg, instanseg_patch
 from ._proseg import proseg
+from ._segger import segger
 from ._stardist import stardist, stardist_patch
