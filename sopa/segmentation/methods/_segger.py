@@ -10,7 +10,7 @@ from spatialdata.models import ShapesModel
 from spatialdata.transformations import BaseTransformation
 
 from ...aggregation.table import add_parsed_table
-from ...constants import SopaKeys
+from ...constants import SopaAttrs, SopaKeys
 from ...utils import (
     copy_transformations,
     delete_transcripts_patches_dirs,
@@ -47,7 +47,7 @@ def segger(
     Args:
         sdata: A `SpatialData` object.
         delete_cache: Whether to delete the cache after segmentation.
-        prior_shapes_key: Key of `sdata` containing the prior cell boundaries. If not provided, inferred from the transcript patches metadata. Must be a shapes element in `sdata`.
+        prior_shapes_key: Key of `sdata` containing the prior cell boundaries. If `"auto"`, use the latest performed segmentation. If not provided, inferred from the transcript patches metadata. Must be a shapes element in `sdata`.
         key_added: Name of the shapes element to be added to `sdata.shapes`.
         **kwargs: Additional keyword arguments passed to `segger.segment()` (e.g. `n_epochs`).
     """
@@ -60,6 +60,12 @@ def segger(
         "Segger works on a single patch. Re-run `sopa.make_transcript_patches` with `patch_width=None` and a `prior_shapes_key`."
     )
     patch_dir = Path(patches_dirs[0])
+
+    if prior_shapes_key == "auto":
+        prior_shapes_key = sdata.attrs.get(SopaAttrs.BOUNDARIES)
+        assert prior_shapes_key is not None, (
+            "`sdata` does not contain any known prior segmentation. Provide `prior_shapes_key` explicitly."
+        )
 
     if prior_shapes_key is None:
         prior_shapes_key = _resolve_prior_shapes_key(sdata)
