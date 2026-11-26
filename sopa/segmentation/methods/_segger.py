@@ -161,7 +161,15 @@ def _run_segger(
             "Install segger (`pip install 'sopa[segger]'` or `pip install segger`) for this method to work."
         )
 
-    segger.configure_memory()
+    try:
+        from rmm.mr import CudaMemoryResource, get_current_device_resource
+
+        is_default = isinstance(get_current_device_resource(), CudaMemoryResource)
+    except Exception:
+        is_default = True
+
+    if is_default:
+        segger.configure_memory()
 
     kwargs.setdefault("export", ["anndata", "boundaries"])
 
