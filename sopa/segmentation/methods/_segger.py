@@ -113,9 +113,11 @@ def _prepare_inputs(
     points_key: str,
     prior_shapes_key: str,
 ) -> tuple[pd.DataFrame, gpd.GeoDataFrame]:
-    transcripts = pd.read_csv(patch_dir / "transcripts.csv")
-
     feature_key = get_feature_key(sdata[points_key], raise_error=True)
+
+    usecols = {"x", "y", feature_key, SopaKeys.SOPA_PRIOR, "cell_id", "overlaps_nucleus", "CellComp"}
+    header = pd.read_csv(patch_dir / "transcripts.csv", nrows=0).columns
+    transcripts = pd.read_csv(patch_dir / "transcripts.csv", usecols=list(usecols & set(header)))
 
     if SopaKeys.SOPA_PRIOR in transcripts.columns:
         transcripts = transcripts.drop(columns=["cell_id"], errors="ignore")
