@@ -50,6 +50,32 @@ def test_aggregate_channels_aligned():
     assert (true_max_intensities == adata_max_intensities.X).all()
 
 
+@pytest.mark.parametrize("mode", ["average", "min", "max"])
+def test_aggregate_channels_aligned_non_rectangular_across_chunks(mode: str):
+    rng = np.random.default_rng(42)
+    image = rng.integers(1, 100, size=(2, 24, 24)).astype(float)
+    channel_names = ["DAPI", "CD3"]
+
+    xarr_single = xr.DataArray(
+        da.from_array(image, chunks=(2, 24, 24)), dims=["c", "y", "x"], coords={"c": channel_names}
+    )
+    xarr_chunked = xr.DataArray(
+        da.from_array(image, chunks=(2, 8, 8)), dims=["c", "y", "x"], coords={"c": channel_names}
+    )
+
+    cells = [
+        Polygon([(4, 4), (12, 6), (10, 13), (5, 11)]),
+        Point(8.2, 8.3).buffer(5.5),
+        Polygon([(6, 6), (15, 7), (7, 15)]),
+    ]
+    gdf = gpd.GeoDataFrame(geometry=cells)
+
+    expected = _aggregate_channels_aligned(xarr_single, gdf, mode)
+    actual = _aggregate_channels_aligned(xarr_chunked, gdf, mode)
+
+    np.testing.assert_allclose(actual.X, expected.X)
+
+
 def test_count_transcripts():
     df_pandas = pd.DataFrame({
         "x": [1, 2, 3, 7, 11, 1, 3, 2, 2, 1],
@@ -363,12 +389,12 @@ def test_sequential_aggregation():
     sdata["cellpose_boundaries"].index = [f"cellpose_{i}" for i in range(len(sdata["cellpose_boundaries"]))]
     del sdata["table"]
 
-    sopa.aggregate(sdata, min_intensity_ratio=0.9)
+    sopa.aggregate(sdata, min_intensity_ratio=0.95)
     assert sdata["table"].n_obs < 400
 
     n_obs = sdata["table"].n_obs
 
-    sopa.aggregate(sdata, drop_filtered_cells=False, min_intensity_ratio=0.9)
+    sopa.aggregate(sdata, drop_filtered_cells=False, min_intensity_ratio=0.95)
 
     assert sdata["table"].n_obs == n_obs
     assert 0.001 < sdata["table"].obs[SopaKeys.PASSES_FILTERING].mean() < 0.999
