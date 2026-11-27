@@ -95,16 +95,19 @@ def _aggregate_channels_aligned(image: DataArray, geo_df: gpd.GeoDataFrame, mode
 
             sub_image = chunk[
                 :,
-                max(bounds[1] - ymin, 0) : bounds[3] - ymin,
-                max(bounds[0] - xmin, 0) : bounds[2] - xmin,
+                max(bounds[1] - ymin, 0) : max(bounds[3] - ymin, 0),
+                max(bounds[0] - xmin, 0) : max(bounds[2] - xmin, 0),
             ]
 
             if sub_image.shape[1] == 0 or sub_image.shape[2] == 0:
                 continue
 
-            mask = rasterize(cell, sub_image.shape[1:], bounds)
+            mask = rasterize(cell, sub_image.shape[1:], (max(bounds[0], xmin), max(bounds[1], ymin)))
+            mask_sum = np.sum(mask)
+            if mask_sum == 0:
+                continue
 
-            areas[index] += np.sum(mask)
+            areas[index] += mask_sum
 
             if mode == "min":
                 masked_image = ma.masked_array(sub_image, 1 - np.repeat(mask[None], n_channels, axis=0))
