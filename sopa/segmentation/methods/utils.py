@@ -103,6 +103,12 @@ def _read_one_segmented_patch(
     else:
         adata = anndata.io.read_h5ad(directory / "segmentation_counts.h5ad")
 
+    stats_file = directory / "segmentation_cell_stats.csv"
+    if stats_file.exists():  # Baysor >= 0.7 writes the cell statistics here, not in the loom
+        stats = pd.read_csv(stats_file, index_col="cell")
+        stats.index = stats.index.astype(str)
+        adata.obs = adata.obs.join(stats[stats.columns.difference(adata.obs.columns)])
+
     adata.obs.rename(columns={"area": SopaKeys.ORIGINAL_AREA_OBS}, inplace=True)
 
     cells_ids = pd.Series(
