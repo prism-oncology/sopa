@@ -1,4 +1,8 @@
+import json
+
+import anndata
 import numpy as np
+import pandas as pd
 import pytest
 import shapely
 from geopandas.testing import assert_geodataframe_equal
@@ -8,6 +12,7 @@ from spatialdata.models import Image2DModel
 
 import sopa
 from sopa.constants import SopaKeys
+from sopa.segmentation.methods.utils import _read_one_segmented_patch
 from sopa.segmentation.stainings import _channels_average_within_mask
 
 
@@ -94,3 +99,22 @@ def test_tissue_segmentation_drop_threshold():
 
     sopa.segmentation.tissue(sdata, drop_threshold=0.21)
     assert len(sdata["region_of_interest"]) == 1
+
+
+def test_read_baysor_cell_stats(tmp_path):
+    cells = ["cell_1", "cell_2"]
+    adata = anndata.AnnData(np.ones((2, 3)), obs=pd.DataFrame({"CellID": [1, 2]}, index=cells))
+    adata.write_h5ad(tmp_path / "segmentation_counts.h5ad")
+
+    squares = [[[x, 0], [x + 10, 0], [x + 10, 10], [x, 10], [x, 0]] for x in (0, 20)]
+    geometries = [{"cell": c, "type": "Polygon", "coordinates": [s]} for c, s in zip(cells, squares, strict=True)]
+    (tmp_path / "segmentation_polygons_2d.json").write_text(json.dumps({"geometries": geometries}))
+
+    # Baysor >= 0.7 writes the cell statistics to this file only; its rows need not follow the loom's order
+    stats = pd.DataFrame({"cell": cells[::-1], "area": [90.0, 100.0], "avg_confidence": [0.5, 0.9]})
+    stats.to_csv(tmp_path / "segmentation_cell_stats.csv", index=False)
+
+    _, adata = _read_one_segmented_patch(tmp_path)
+
+    assert adata.obs[SopaKeys.ORIGINAL_AREA_OBS].tolist() == [100.0, 90.0]
+    assert adata.obs["avg_confidence"].tolist() == [0.9, 0.5]
